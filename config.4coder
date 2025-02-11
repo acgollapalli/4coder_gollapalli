@@ -41,8 +41,8 @@ lister_roundness = 20;
 
 // Code Wrapping
 treat_as_code = ".cpp.c.hpp.h.cc.cs.java.rs.glsl.m.mm.ds.md.4coder.jai.vert.frag.odin";
-enable_virtual_whitespace = false;
-virtual_whitespace_regular_indent = 0;
+enable_virtual_whitespace = true;
+virtual_whitespace_regular_indent = 4;
 enable_code_wrapping = true;
 
 // This only applies to code files in code-wrapping mode.
@@ -53,7 +53,7 @@ automatically_indent_text_on_save = true;
 automatically_save_changes_on_build = true;
 
 // Load project on startup
-automatically_load_project = true;
+automatically_load_project = false;
 
 // Indentation
 indent_with_tabs = false;
@@ -61,7 +61,7 @@ indent_width = 4;
 default_tab_width = 4;
 
 // Theme
-default_theme_name = "theme-gollapalli";
+default_theme_name = "theme-handmade-hero";
 highlight_line_at_cursor = true;
 
 // Font
