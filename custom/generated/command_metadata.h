@@ -2,7 +2,7 @@
 #define command_id(c) (fcoder_metacmd_ID_##c)
 #define command_metadata(c) (&fcoder_metacmd_table[command_id(c)])
 #define command_metadata_by_id(id) (&fcoder_metacmd_table[id])
-#define command_one_past_last_id 313
+#define command_one_past_last_id 320
 #if defined(CUSTOM_COMMAND_SIG)
 #define PROC_LINKS(x,y) x
 #else
@@ -61,11 +61,14 @@ CUSTOM_COMMAND_SIG(duplicate_line);
 CUSTOM_COMMAND_SIG(execute_any_cli);
 CUSTOM_COMMAND_SIG(execute_previous_cli);
 CUSTOM_COMMAND_SIG(exit_4coder);
+CUSTOM_COMMAND_SIG(g4_backspace_char);
 CUSTOM_COMMAND_SIG(g4_build_in_build_panel);
 CUSTOM_COMMAND_SIG(g4_change_active_panel);
 CUSTOM_COMMAND_SIG(g4_change_active_panel_backwards);
+CUSTOM_COMMAND_SIG(g4_close_panel);
 CUSTOM_COMMAND_SIG(g4_command_lister);
 CUSTOM_COMMAND_SIG(g4_cursor_mark_swap_or_insert_underscore);
+CUSTOM_COMMAND_SIG(g4_delete_char);
 CUSTOM_COMMAND_SIG(g4_enter_insert_mode);
 CUSTOM_COMMAND_SIG(g4_goto_next_jump);
 CUSTOM_COMMAND_SIG(g4_goto_prev_jump);
@@ -80,6 +83,7 @@ CUSTOM_COMMAND_SIG(g4_kill_range_and_paste);
 CUSTOM_COMMAND_SIG(g4_list_all_functions_all_buffers_lister);
 CUSTOM_COMMAND_SIG(g4_list_all_functions_current_buffer_lister);
 CUSTOM_COMMAND_SIG(g4_list_all_locations);
+CUSTOM_COMMAND_SIG(g4_modal_null);
 CUSTOM_COMMAND_SIG(g4_move_down);
 CUSTOM_COMMAND_SIG(g4_move_down_to_blank_line_end);
 CUSTOM_COMMAND_SIG(g4_move_left);
@@ -96,6 +100,7 @@ CUSTOM_COMMAND_SIG(g4_move_up);
 CUSTOM_COMMAND_SIG(g4_move_up_to_blank_line_end);
 CUSTOM_COMMAND_SIG(g4_n_keys);
 CUSTOM_COMMAND_SIG(g4_open_in_other);
+CUSTOM_COMMAND_SIG(g4_open_panel_vsplit);
 CUSTOM_COMMAND_SIG(g4_page_down);
 CUSTOM_COMMAND_SIG(g4_page_up);
 CUSTOM_COMMAND_SIG(g4_paste);
@@ -103,6 +108,8 @@ CUSTOM_COMMAND_SIG(g4_paste_next);
 CUSTOM_COMMAND_SIG(g4_project_command_lister);
 CUSTOM_COMMAND_SIG(g4_return_to_nav_mode);
 CUSTOM_COMMAND_SIG(g4_reverse_search);
+CUSTOM_COMMAND_SIG(g4_save_all_or_shift_return);
+CUSTOM_COMMAND_SIG(g4_save_or_return);
 CUSTOM_COMMAND_SIG(g4_search);
 CUSTOM_COMMAND_SIG(g4_set_mark);
 CUSTOM_COMMAND_SIG(g4_write_text_input);
@@ -334,7 +341,7 @@ char *source_name;
 i32 source_name_len;
 i32 line_number;
 };
-static Command_Metadata fcoder_metacmd_table[313] = {
+static Command_Metadata fcoder_metacmd_table[320] = {
 { PROC_LINKS(allow_mouse, 0), false, "allow_mouse", 11, "Shows the mouse and causes all mouse input to be processed normally.", 68, "C:\\Users\\acgol\\Documents\\4coder\\custom\\4coder_default_framework.cpp", 67, 481 },
 { PROC_LINKS(auto_indent_line_at_cursor, 0), false, "auto_indent_line_at_cursor", 26, "Auto-indents the line on which the cursor sits.", 47, "C:\\Users\\acgol\\Documents\\4coder\\custom\\4coder_auto_indent.cpp", 61, 420 },
 { PROC_LINKS(auto_indent_range, 0), false, "auto_indent_range", 17, "Auto-indents the range between the cursor and the mark.", 55, "C:\\Users\\acgol\\Documents\\4coder\\custom\\4coder_auto_indent.cpp", 61, 430 },
@@ -387,50 +394,57 @@ static Command_Metadata fcoder_metacmd_table[313] = {
 { PROC_LINKS(execute_any_cli, 0), false, "execute_any_cli", 15, "Queries for an output buffer name and system command, runs the system command as a CLI and prints the output to the specified buffer.", 133, "C:\\Users\\acgol\\Documents\\4coder\\custom\\4coder_cli_command.cpp", 61, 22 },
 { PROC_LINKS(execute_previous_cli, 0), false, "execute_previous_cli", 20, "If the command execute_any_cli has already been used, this will execute a CLI reusing the most recent buffer name and command.", 126, "C:\\Users\\acgol\\Documents\\4coder\\custom\\4coder_cli_command.cpp", 61, 7 },
 { PROC_LINKS(exit_4coder, 0), false, "exit_4coder", 11, "Attempts to close 4coder.", 25, "C:\\Users\\acgol\\Documents\\4coder\\custom\\4coder_base_commands.cpp", 63, 848 },
-{ PROC_LINKS(g4_build_in_build_panel, 0), false, "g4_build_in_build_panel", 23, "In Navigate Mode, build in build panel", 38, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 288 },
-{ PROC_LINKS(g4_change_active_panel, 0), false, "g4_change_active_panel", 22, "In Navigate Mode, change_active_panel", 37, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 276 },
-{ PROC_LINKS(g4_change_active_panel_backwards, 0), false, "g4_change_active_panel_backwards", 32, "In Navigate Mode, change_active_panel_backwards", 47, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 280 },
-{ PROC_LINKS(g4_command_lister, 0), false, "g4_command_lister", 17, "In Navigate Mode, Opens command Lister (like M-x in emacs)", 58, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 295 },
-{ PROC_LINKS(g4_cursor_mark_swap_or_insert_underscore, 0), false, "g4_cursor_mark_swap_or_insert_underscore", 40, "In Navigate Mode, swaps the position of the cursor and mark. In Insert mode, inserts an underscore. In do-many mode, swaps the cursor and mark repeatedly.", 154, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 206 },
-{ PROC_LINKS(g4_enter_insert_mode, 0), false, "g4_enter_insert_mode", 20, "In Navigate Mode, enters insert mode.", 37, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 87 },
-{ PROC_LINKS(g4_goto_next_jump, 0), false, "g4_goto_next_jump", 17, "In Navigate Mode, go to the next entry in the jump list", 55, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 222 },
-{ PROC_LINKS(g4_goto_prev_jump, 0), false, "g4_goto_prev_jump", 17, "In Navigate Mode, go to the previous entry in the jump list", 59, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 226 },
-{ PROC_LINKS(g4_interactive_new, 0), false, "g4_interactive_new", 18, "In Navigate Mode, open a new file", 33, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 214 },
-{ PROC_LINKS(g4_interactive_open, 0), false, "g4_interactive_open", 19, "In Navigate Mode, open file", 27, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 210 },
-{ PROC_LINKS(g4_keyboard_macro_finish_recording, 0), false, "g4_keyboard_macro_finish_recording", 34, "In Navigate Mode, finish recording the macro.", 45, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 272 },
-{ PROC_LINKS(g4_keyboard_macro_replay, 0), false, "g4_keyboard_macro_replay", 24, "In Navigate Mode, replays the macro. In Do-Many mode does the macro n-many times, else inserts text", 99, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 263 },
-{ PROC_LINKS(g4_keyboard_macro_start_recording, 0), false, "g4_keyboard_macro_start_recording", 33, "In Navigate Mode, record the macro.", 35, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 268 },
-{ PROC_LINKS(g4_kill_range, 0), false, "g4_kill_range", 13, "In Navigate Mode, kills the range between mark and cursor, then enters insert mode", 82, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 234 },
-{ PROC_LINKS(g4_kill_range_and_insert, 0), false, "g4_kill_range_and_insert", 24, "In Navigate Mode, kills the range between mark and cursor, then enters insert mode", 82, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 238 },
-{ PROC_LINKS(g4_kill_range_and_paste, 0), false, "g4_kill_range_and_paste", 23, "In Navigate Mode, kills the range between mark and cursor", 57, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 249 },
-{ PROC_LINKS(g4_list_all_functions_all_buffers_lister, 0), false, "g4_list_all_functions_all_buffers_lister", 40, "In Navigate Mode, Opens a lister with all functions in all open buffers", 71, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 332 },
-{ PROC_LINKS(g4_list_all_functions_current_buffer_lister, 0), false, "g4_list_all_functions_current_buffer_lister", 43, "In Navigate Mode, Opens a lister with all functions in current buffer", 69, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 328 },
-{ PROC_LINKS(g4_list_all_locations, 0), false, "g4_list_all_locations", 21, "In Navigate Mode, lists all locations of the case sensitive string in all buffers", 81, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 321 },
-{ PROC_LINKS(g4_move_down, 0), false, "g4_move_down", 12, "In Navigate Mode, moves the cursor down one line, else inserts text", 67, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 131 },
-{ PROC_LINKS(g4_move_down_to_blank_line_end, 0), false, "g4_move_down_to_blank_line_end", 30, "In Navigate Mode, seeks the cursor down to the next blank line and places it at the end of the line, else inserts text", 118, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 171 },
-{ PROC_LINKS(g4_move_left, 0), false, "g4_move_left", 12, "In Navigate Mode, moves the cursor one character left, else inserts text", 72, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 126 },
-{ PROC_LINKS(g4_move_left_alpha_numeric_boundary, 0), false, "g4_move_left_alpha_numeric_boundary", 35, "In Navigate Mode, seek left for boundary between alphanumeric characters and non-alphanumeric characters, else inserts text", 123, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 166 },
-{ PROC_LINKS(g4_move_left_alpha_numeric_or_camel_boundary, 0), false, "g4_move_left_alpha_numeric_or_camel_boundary", 44, "In Navigate Mode, seek right for boundary between alphanumeric characters or camel case word and non-alphanumeric characters, else inserts text", 143, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 186 },
-{ PROC_LINKS(g4_move_left_whitespace_boundary, 0), false, "g4_move_left_whitespace_boundary", 32, "In Navigate Mode, moves left to the next whitespace boundary, else inserts text", 79, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 146 },
-{ PROC_LINKS(g4_move_line_down, 0), false, "g4_move_line_down", 17, "In Navigate Mode, swaps the line under the cursor with the line below it, and moves the cursor down with it, else inserts text", 126, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 191 },
-{ PROC_LINKS(g4_move_line_up, 0), false, "g4_move_line_up", 15, "In Navigate Mode, swaps the line under the cursor with the line above it, and moves the cursor up with it, else inserts text", 124, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 181 },
-{ PROC_LINKS(g4_move_right, 0), false, "g4_move_right", 13, "In Navigate Mode, moves the cursor one character right, else inserts text", 73, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 136 },
-{ PROC_LINKS(g4_move_right_alpha_numeric_boundary, 0), false, "g4_move_right_alpha_numeric_boundary", 36, "In Navigate Mode, seek right for boundary between alphanumeric characters and non-alphanumeric characters, else inserts text", 124, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 176 },
-{ PROC_LINKS(g4_move_right_alpha_numeric_or_camel_boundary, 0), false, "g4_move_right_alpha_numeric_or_camel_boundary", 45, "In Navigate Mode, seek right for boundary between alphanumeric characters or camel case word and non-alphanumeric characters, else inserts text", 143, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 196 },
-{ PROC_LINKS(g4_move_right_whitespace_boundary, 0), false, "g4_move_right_whitespace_boundary", 33, "In Navigate Mode, moves right to the next whitespace boundary, else inserts text", 80, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 156 },
-{ PROC_LINKS(g4_move_up, 0), false, "g4_move_up", 10, "In Navigate Mode, moves the cursor up one line, else inserts text", 65, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 121 },
-{ PROC_LINKS(g4_move_up_to_blank_line_end, 0), false, "g4_move_up_to_blank_line_end", 28, "In Navigate Mode, seeks the cursor up to the next blank line and places it at the end of the line, else inserts text", 116, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 161 },
-{ PROC_LINKS(g4_n_keys, 0), false, "g4_n_keys", 9, "In Do-Many mode, sets how many times an action is executed, else inserts text.", 78, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 94 },
-{ PROC_LINKS(g4_open_in_other, 0), false, "g4_open_in_other", 16, "In Navigate Mode, open file in other panel", 42, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 218 },
-{ PROC_LINKS(g4_page_down, 0), false, "g4_page_down", 12, "In Navigate Mode, moves the cursor down one page, else inserts text", 67, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 151 },
-{ PROC_LINKS(g4_page_up, 0), false, "g4_page_up", 10, "In Navigate Mode, moves the cursor up one page, else inserts text", 65, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 141 },
-{ PROC_LINKS(g4_paste, 0), false, "g4_paste", 8, "In Navigate Mode, kills the range between mark and cursor", 57, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 242 },
-{ PROC_LINKS(g4_paste_next, 0), false, "g4_paste_next", 13, "In Navigate Mode, replaces the previous paste with the next item from the clipboard", 83, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 256 },
-{ PROC_LINKS(g4_project_command_lister, 0), false, "g4_project_command_lister", 25, "In Navigate Mode, opens project command lister", 46, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 299 },
-{ PROC_LINKS(g4_return_to_nav_mode, 0), false, "g4_return_to_nav_mode", 21, "Exits mode or command. Returns to Navigation Mode", 49, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 80 },
-{ PROC_LINKS(g4_reverse_search, 0), false, "g4_reverse_search", 17, "In Navigate Mode, search in reverse because you're too lazy to implement wrapping search.", 89, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 317 },
-{ PROC_LINKS(g4_search, 0), false, "g4_search", 9, "In Navigate Mode, search the file", 33, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 312 },
-{ PROC_LINKS(g4_set_mark, 0), false, "g4_set_mark", 11, "In Navigate Mode, sets the mark to the current position of the cursor", 69, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 201 },
+{ PROC_LINKS(g4_backspace_char, 0), false, "g4_backspace_char", 17, "Backspace char in insert mode, otherwise do nothing", 51, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 255 },
+{ PROC_LINKS(g4_build_in_build_panel, 0), false, "g4_build_in_build_panel", 23, "In Navigate Mode, build in build panel", 38, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 305 },
+{ PROC_LINKS(g4_change_active_panel, 0), false, "g4_change_active_panel", 22, "In Navigate Mode, change_active_panel", 37, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 229 },
+{ PROC_LINKS(g4_change_active_panel_backwards, 0), false, "g4_change_active_panel_backwards", 32, "In Navigate Mode, change_active_panel_backwards", 47, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 233 },
+{ PROC_LINKS(g4_close_panel, 0), false, "g4_close_panel", 14, "In Navigate Mode, close_panel", 29, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 241 },
+{ PROC_LINKS(g4_command_lister, 0), false, "g4_command_lister", 17, "In Navigate Mode, Opens command Lister (like M-x in emacs)", 58, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 312 },
+{ PROC_LINKS(g4_cursor_mark_swap_or_insert_underscore, 0), false, "g4_cursor_mark_swap_or_insert_underscore", 40, "In Navigate Mode, swaps the position of the cursor and mark. In Insert mode, inserts an underscore. In do-many mode, swaps the cursor and mark repeatedly.", 154, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 205 },
+{ PROC_LINKS(g4_delete_char, 0), false, "g4_delete_char", 14, "Delete char in insert mode, otherwise do nothing", 48, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 251 },
+{ PROC_LINKS(g4_enter_insert_mode, 0), false, "g4_enter_insert_mode", 20, "In Navigate Mode, enters insert mode.", 37, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 85 },
+{ PROC_LINKS(g4_goto_next_jump, 0), false, "g4_goto_next_jump", 17, "In Navigate Mode, go to the next entry in the jump list", 55, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 221 },
+{ PROC_LINKS(g4_goto_prev_jump, 0), false, "g4_goto_prev_jump", 17, "In Navigate Mode, go to the previous entry in the jump list", 59, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 225 },
+{ PROC_LINKS(g4_interactive_new, 0), false, "g4_interactive_new", 18, "In Navigate Mode, open a new file", 33, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 213 },
+{ PROC_LINKS(g4_interactive_open, 0), false, "g4_interactive_open", 19, "In Navigate Mode, open file", 27, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 209 },
+{ PROC_LINKS(g4_keyboard_macro_finish_recording, 0), false, "g4_keyboard_macro_finish_recording", 34, "In Navigate Mode, finish recording the macro.", 45, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 296 },
+{ PROC_LINKS(g4_keyboard_macro_replay, 0), false, "g4_keyboard_macro_replay", 24, "In Navigate Mode, replays the macro. In Do-Many mode does the macro n-many times, else inserts text", 99, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 287 },
+{ PROC_LINKS(g4_keyboard_macro_start_recording, 0), false, "g4_keyboard_macro_start_recording", 33, "In Navigate Mode, record the macro.", 35, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 292 },
+{ PROC_LINKS(g4_kill_range, 0), false, "g4_kill_range", 13, "In Navigate Mode, kills the range between mark and cursor, then enters insert mode", 82, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 259 },
+{ PROC_LINKS(g4_kill_range_and_insert, 0), false, "g4_kill_range_and_insert", 24, "In Navigate Mode, kills the range between mark and cursor, then enters insert mode", 82, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 263 },
+{ PROC_LINKS(g4_kill_range_and_paste, 0), false, "g4_kill_range_and_paste", 23, "In Navigate Mode, kills the range between mark and cursor", 57, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 273 },
+{ PROC_LINKS(g4_list_all_functions_all_buffers_lister, 0), false, "g4_list_all_functions_all_buffers_lister", 40, "In Navigate Mode, Opens a lister with all functions in all open buffers", 71, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 349 },
+{ PROC_LINKS(g4_list_all_functions_current_buffer_lister, 0), false, "g4_list_all_functions_current_buffer_lister", 43, "In Navigate Mode, Opens a lister with all functions in current buffer", 69, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 345 },
+{ PROC_LINKS(g4_list_all_locations, 0), false, "g4_list_all_locations", 21, "In Navigate Mode, lists all locations of the case sensitive string in all buffers", 81, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 338 },
+{ PROC_LINKS(g4_modal_null, 0), false, "g4_modal_null", 13, "In navigation mode, don't do anything", 37, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 111 },
+{ PROC_LINKS(g4_move_down, 0), false, "g4_move_down", 12, "In Navigate Mode, moves the cursor down one line, else inserts text", 67, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 130 },
+{ PROC_LINKS(g4_move_down_to_blank_line_end, 0), false, "g4_move_down_to_blank_line_end", 30, "In Navigate Mode, seeks the cursor down to the next blank line and places it at the end of the line, else inserts text", 118, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 170 },
+{ PROC_LINKS(g4_move_left, 0), false, "g4_move_left", 12, "In Navigate Mode, moves the cursor one character left, else inserts text", 72, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 125 },
+{ PROC_LINKS(g4_move_left_alpha_numeric_boundary, 0), false, "g4_move_left_alpha_numeric_boundary", 35, "In Navigate Mode, seek left for boundary between alphanumeric characters and non-alphanumeric characters, else inserts text", 123, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 165 },
+{ PROC_LINKS(g4_move_left_alpha_numeric_or_camel_boundary, 0), false, "g4_move_left_alpha_numeric_or_camel_boundary", 44, "In Navigate Mode, seek right for boundary between alphanumeric characters or camel case word and non-alphanumeric characters, else inserts text", 143, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 185 },
+{ PROC_LINKS(g4_move_left_whitespace_boundary, 0), false, "g4_move_left_whitespace_boundary", 32, "In Navigate Mode, moves left to the next whitespace boundary, else inserts text", 79, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 145 },
+{ PROC_LINKS(g4_move_line_down, 0), false, "g4_move_line_down", 17, "In Navigate Mode, swaps the line under the cursor with the line below it, and moves the cursor down with it, else inserts text", 126, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 190 },
+{ PROC_LINKS(g4_move_line_up, 0), false, "g4_move_line_up", 15, "In Navigate Mode, swaps the line under the cursor with the line above it, and moves the cursor up with it, else inserts text", 124, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 180 },
+{ PROC_LINKS(g4_move_right, 0), false, "g4_move_right", 13, "In Navigate Mode, moves the cursor one character right, else inserts text", 73, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 135 },
+{ PROC_LINKS(g4_move_right_alpha_numeric_boundary, 0), false, "g4_move_right_alpha_numeric_boundary", 36, "In Navigate Mode, seek right for boundary between alphanumeric characters and non-alphanumeric characters, else inserts text", 124, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 175 },
+{ PROC_LINKS(g4_move_right_alpha_numeric_or_camel_boundary, 0), false, "g4_move_right_alpha_numeric_or_camel_boundary", 45, "In Navigate Mode, seek right for boundary between alphanumeric characters or camel case word and non-alphanumeric characters, else inserts text", 143, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 195 },
+{ PROC_LINKS(g4_move_right_whitespace_boundary, 0), false, "g4_move_right_whitespace_boundary", 33, "In Navigate Mode, moves right to the next whitespace boundary, else inserts text", 80, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 155 },
+{ PROC_LINKS(g4_move_up, 0), false, "g4_move_up", 10, "In Navigate Mode, moves the cursor up one line, else inserts text", 65, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 120 },
+{ PROC_LINKS(g4_move_up_to_blank_line_end, 0), false, "g4_move_up_to_blank_line_end", 28, "In Navigate Mode, seeks the cursor up to the next blank line and places it at the end of the line, else inserts text", 116, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 160 },
+{ PROC_LINKS(g4_n_keys, 0), false, "g4_n_keys", 9, "In Do-Many mode, sets how many times an action is executed, else inserts text.", 78, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 92 },
+{ PROC_LINKS(g4_open_in_other, 0), false, "g4_open_in_other", 16, "In Navigate Mode, open file in other panel", 42, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 217 },
+{ PROC_LINKS(g4_open_panel_vsplit, 0), false, "g4_open_panel_vsplit", 20, "In Navigate Mode, open_panel_vsplit", 35, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 237 },
+{ PROC_LINKS(g4_page_down, 0), false, "g4_page_down", 12, "In Navigate Mode, moves the cursor down one page, else inserts text", 67, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 150 },
+{ PROC_LINKS(g4_page_up, 0), false, "g4_page_up", 10, "In Navigate Mode, moves the cursor up one page, else inserts text", 65, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 140 },
+{ PROC_LINKS(g4_paste, 0), false, "g4_paste", 8, "In Navigate Mode, kills the range between mark and cursor", 57, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 267 },
+{ PROC_LINKS(g4_paste_next, 0), false, "g4_paste_next", 13, "In Navigate Mode, replaces the previous paste with the next item from the clipboard", 83, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 280 },
+{ PROC_LINKS(g4_project_command_lister, 0), false, "g4_project_command_lister", 25, "In Navigate Mode, opens project command lister", 46, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 316 },
+{ PROC_LINKS(g4_return_to_nav_mode, 0), false, "g4_return_to_nav_mode", 21, "Exits mode or command. Returns to Navigation Mode", 49, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 78 },
+{ PROC_LINKS(g4_reverse_search, 0), false, "g4_reverse_search", 17, "In Navigate Mode, search in reverse because you're too lazy to implement wrapping search.", 89, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 334 },
+{ PROC_LINKS(g4_save_all_or_shift_return, 0), false, "g4_save_all_or_shift_return", 27, "In Navigate Mode, saves the file, otherwise runs the return command", 67, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 360 },
+{ PROC_LINKS(g4_save_or_return, 0), false, "g4_save_or_return", 17, "In Navigate Mode, saves the file, otherwise runs the return command", 67, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 356 },
+{ PROC_LINKS(g4_search, 0), false, "g4_search", 9, "In Navigate Mode, search the file", 33, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 329 },
+{ PROC_LINKS(g4_set_mark, 0), false, "g4_set_mark", 11, "In Navigate Mode, sets the mark to the current position of the cursor", 69, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 200 },
 { PROC_LINKS(g4_write_text_input, 0), false, "g4_write_text_input", 19, "Inserts text from a keycode event", 33, "C:\\Users\\acgol\\Documents\\4coder\\custom\\g4_init.cpp", 50, 21 },
 { PROC_LINKS(go_to_user_directory, 0), false, "go_to_user_directory", 20, "Go to the 4coder user directory", 31, "C:\\Users\\acgol\\Documents\\4coder\\custom\\4coder_config.cpp", 56, 1655 },
 { PROC_LINKS(goto_beginning_of_file, 0), false, "goto_beginning_of_file", 22, "Sets the cursor to the beginning of the file.", 45, "C:\\Users\\acgol\\Documents\\4coder\\custom\\4coder_helper.cpp", 56, 2258 },
@@ -701,265 +715,272 @@ static i32 fcoder_metacmd_ID_duplicate_line = 48;
 static i32 fcoder_metacmd_ID_execute_any_cli = 49;
 static i32 fcoder_metacmd_ID_execute_previous_cli = 50;
 static i32 fcoder_metacmd_ID_exit_4coder = 51;
-static i32 fcoder_metacmd_ID_g4_build_in_build_panel = 52;
-static i32 fcoder_metacmd_ID_g4_change_active_panel = 53;
-static i32 fcoder_metacmd_ID_g4_change_active_panel_backwards = 54;
-static i32 fcoder_metacmd_ID_g4_command_lister = 55;
-static i32 fcoder_metacmd_ID_g4_cursor_mark_swap_or_insert_underscore = 56;
-static i32 fcoder_metacmd_ID_g4_enter_insert_mode = 57;
-static i32 fcoder_metacmd_ID_g4_goto_next_jump = 58;
-static i32 fcoder_metacmd_ID_g4_goto_prev_jump = 59;
-static i32 fcoder_metacmd_ID_g4_interactive_new = 60;
-static i32 fcoder_metacmd_ID_g4_interactive_open = 61;
-static i32 fcoder_metacmd_ID_g4_keyboard_macro_finish_recording = 62;
-static i32 fcoder_metacmd_ID_g4_keyboard_macro_replay = 63;
-static i32 fcoder_metacmd_ID_g4_keyboard_macro_start_recording = 64;
-static i32 fcoder_metacmd_ID_g4_kill_range = 65;
-static i32 fcoder_metacmd_ID_g4_kill_range_and_insert = 66;
-static i32 fcoder_metacmd_ID_g4_kill_range_and_paste = 67;
-static i32 fcoder_metacmd_ID_g4_list_all_functions_all_buffers_lister = 68;
-static i32 fcoder_metacmd_ID_g4_list_all_functions_current_buffer_lister = 69;
-static i32 fcoder_metacmd_ID_g4_list_all_locations = 70;
-static i32 fcoder_metacmd_ID_g4_move_down = 71;
-static i32 fcoder_metacmd_ID_g4_move_down_to_blank_line_end = 72;
-static i32 fcoder_metacmd_ID_g4_move_left = 73;
-static i32 fcoder_metacmd_ID_g4_move_left_alpha_numeric_boundary = 74;
-static i32 fcoder_metacmd_ID_g4_move_left_alpha_numeric_or_camel_boundary = 75;
-static i32 fcoder_metacmd_ID_g4_move_left_whitespace_boundary = 76;
-static i32 fcoder_metacmd_ID_g4_move_line_down = 77;
-static i32 fcoder_metacmd_ID_g4_move_line_up = 78;
-static i32 fcoder_metacmd_ID_g4_move_right = 79;
-static i32 fcoder_metacmd_ID_g4_move_right_alpha_numeric_boundary = 80;
-static i32 fcoder_metacmd_ID_g4_move_right_alpha_numeric_or_camel_boundary = 81;
-static i32 fcoder_metacmd_ID_g4_move_right_whitespace_boundary = 82;
-static i32 fcoder_metacmd_ID_g4_move_up = 83;
-static i32 fcoder_metacmd_ID_g4_move_up_to_blank_line_end = 84;
-static i32 fcoder_metacmd_ID_g4_n_keys = 85;
-static i32 fcoder_metacmd_ID_g4_open_in_other = 86;
-static i32 fcoder_metacmd_ID_g4_page_down = 87;
-static i32 fcoder_metacmd_ID_g4_page_up = 88;
-static i32 fcoder_metacmd_ID_g4_paste = 89;
-static i32 fcoder_metacmd_ID_g4_paste_next = 90;
-static i32 fcoder_metacmd_ID_g4_project_command_lister = 91;
-static i32 fcoder_metacmd_ID_g4_return_to_nav_mode = 92;
-static i32 fcoder_metacmd_ID_g4_reverse_search = 93;
-static i32 fcoder_metacmd_ID_g4_search = 94;
-static i32 fcoder_metacmd_ID_g4_set_mark = 95;
-static i32 fcoder_metacmd_ID_g4_write_text_input = 96;
-static i32 fcoder_metacmd_ID_go_to_user_directory = 97;
-static i32 fcoder_metacmd_ID_goto_beginning_of_file = 98;
-static i32 fcoder_metacmd_ID_goto_end_of_file = 99;
-static i32 fcoder_metacmd_ID_goto_first_jump = 100;
-static i32 fcoder_metacmd_ID_goto_first_jump_same_panel_sticky = 101;
-static i32 fcoder_metacmd_ID_goto_jump_at_cursor = 102;
-static i32 fcoder_metacmd_ID_goto_jump_at_cursor_same_panel = 103;
-static i32 fcoder_metacmd_ID_goto_line = 104;
-static i32 fcoder_metacmd_ID_goto_next_jump = 105;
-static i32 fcoder_metacmd_ID_goto_next_jump_no_skips = 106;
-static i32 fcoder_metacmd_ID_goto_prev_jump = 107;
-static i32 fcoder_metacmd_ID_goto_prev_jump_no_skips = 108;
-static i32 fcoder_metacmd_ID_hide_filebar = 109;
-static i32 fcoder_metacmd_ID_hide_scrollbar = 110;
-static i32 fcoder_metacmd_ID_hit_sfx = 111;
-static i32 fcoder_metacmd_ID_hms_demo_tutorial = 112;
-static i32 fcoder_metacmd_ID_if0_off = 113;
-static i32 fcoder_metacmd_ID_if_read_only_goto_position = 114;
-static i32 fcoder_metacmd_ID_if_read_only_goto_position_same_panel = 115;
-static i32 fcoder_metacmd_ID_increase_face_size = 116;
-static i32 fcoder_metacmd_ID_interactive_kill_buffer = 117;
-static i32 fcoder_metacmd_ID_interactive_new = 118;
-static i32 fcoder_metacmd_ID_interactive_open = 119;
-static i32 fcoder_metacmd_ID_interactive_open_or_new = 120;
-static i32 fcoder_metacmd_ID_interactive_switch_buffer = 121;
-static i32 fcoder_metacmd_ID_jump_to_definition = 122;
-static i32 fcoder_metacmd_ID_jump_to_definition_at_cursor = 123;
-static i32 fcoder_metacmd_ID_jump_to_last_point = 124;
-static i32 fcoder_metacmd_ID_keyboard_macro_finish_recording = 125;
-static i32 fcoder_metacmd_ID_keyboard_macro_replay = 126;
-static i32 fcoder_metacmd_ID_keyboard_macro_start_recording = 127;
-static i32 fcoder_metacmd_ID_kill_buffer = 128;
-static i32 fcoder_metacmd_ID_kill_tutorial = 129;
-static i32 fcoder_metacmd_ID_left_adjust_view = 130;
-static i32 fcoder_metacmd_ID_list_all_functions_all_buffers = 131;
-static i32 fcoder_metacmd_ID_list_all_functions_all_buffers_lister = 132;
-static i32 fcoder_metacmd_ID_list_all_functions_current_buffer = 133;
-static i32 fcoder_metacmd_ID_list_all_functions_current_buffer_lister = 134;
-static i32 fcoder_metacmd_ID_list_all_locations = 135;
-static i32 fcoder_metacmd_ID_list_all_locations_case_insensitive = 136;
-static i32 fcoder_metacmd_ID_list_all_locations_of_identifier = 137;
-static i32 fcoder_metacmd_ID_list_all_locations_of_identifier_case_insensitive = 138;
-static i32 fcoder_metacmd_ID_list_all_locations_of_selection = 139;
-static i32 fcoder_metacmd_ID_list_all_locations_of_selection_case_insensitive = 140;
-static i32 fcoder_metacmd_ID_list_all_locations_of_type_definition = 141;
-static i32 fcoder_metacmd_ID_list_all_locations_of_type_definition_of_identifier = 142;
-static i32 fcoder_metacmd_ID_list_all_substring_locations = 143;
-static i32 fcoder_metacmd_ID_list_all_substring_locations_case_insensitive = 144;
-static i32 fcoder_metacmd_ID_load_project = 145;
-static i32 fcoder_metacmd_ID_load_theme_current_buffer = 146;
-static i32 fcoder_metacmd_ID_load_themes_default_folder = 147;
-static i32 fcoder_metacmd_ID_load_themes_hot_directory = 148;
-static i32 fcoder_metacmd_ID_make_directory_query = 149;
-static i32 fcoder_metacmd_ID_miblo_decrement_basic = 150;
-static i32 fcoder_metacmd_ID_miblo_decrement_time_stamp = 151;
-static i32 fcoder_metacmd_ID_miblo_decrement_time_stamp_minute = 152;
-static i32 fcoder_metacmd_ID_miblo_increment_basic = 153;
-static i32 fcoder_metacmd_ID_miblo_increment_time_stamp = 154;
-static i32 fcoder_metacmd_ID_miblo_increment_time_stamp_minute = 155;
-static i32 fcoder_metacmd_ID_mouse_wheel_change_face_size = 156;
-static i32 fcoder_metacmd_ID_mouse_wheel_scroll = 157;
-static i32 fcoder_metacmd_ID_move_down = 158;
-static i32 fcoder_metacmd_ID_move_down_10 = 159;
-static i32 fcoder_metacmd_ID_move_down_textual = 160;
-static i32 fcoder_metacmd_ID_move_down_to_blank_line = 161;
-static i32 fcoder_metacmd_ID_move_down_to_blank_line_end = 162;
-static i32 fcoder_metacmd_ID_move_down_to_blank_line_skip_whitespace = 163;
-static i32 fcoder_metacmd_ID_move_left = 164;
-static i32 fcoder_metacmd_ID_move_left_alpha_numeric_boundary = 165;
-static i32 fcoder_metacmd_ID_move_left_alpha_numeric_or_camel_boundary = 166;
-static i32 fcoder_metacmd_ID_move_left_token_boundary = 167;
-static i32 fcoder_metacmd_ID_move_left_whitespace_boundary = 168;
-static i32 fcoder_metacmd_ID_move_left_whitespace_or_token_boundary = 169;
-static i32 fcoder_metacmd_ID_move_line_down = 170;
-static i32 fcoder_metacmd_ID_move_line_up = 171;
-static i32 fcoder_metacmd_ID_move_right = 172;
-static i32 fcoder_metacmd_ID_move_right_alpha_numeric_boundary = 173;
-static i32 fcoder_metacmd_ID_move_right_alpha_numeric_or_camel_boundary = 174;
-static i32 fcoder_metacmd_ID_move_right_token_boundary = 175;
-static i32 fcoder_metacmd_ID_move_right_whitespace_boundary = 176;
-static i32 fcoder_metacmd_ID_move_right_whitespace_or_token_boundary = 177;
-static i32 fcoder_metacmd_ID_move_up = 178;
-static i32 fcoder_metacmd_ID_move_up_10 = 179;
-static i32 fcoder_metacmd_ID_move_up_to_blank_line = 180;
-static i32 fcoder_metacmd_ID_move_up_to_blank_line_end = 181;
-static i32 fcoder_metacmd_ID_move_up_to_blank_line_skip_whitespace = 182;
-static i32 fcoder_metacmd_ID_multi_paste = 183;
-static i32 fcoder_metacmd_ID_multi_paste_interactive = 184;
-static i32 fcoder_metacmd_ID_multi_paste_interactive_quick = 185;
-static i32 fcoder_metacmd_ID_music_start = 186;
-static i32 fcoder_metacmd_ID_music_stop = 187;
-static i32 fcoder_metacmd_ID_open_all_code = 188;
-static i32 fcoder_metacmd_ID_open_all_code_recursive = 189;
-static i32 fcoder_metacmd_ID_open_file_in_quotes = 190;
-static i32 fcoder_metacmd_ID_open_in_other = 191;
-static i32 fcoder_metacmd_ID_open_long_braces = 192;
-static i32 fcoder_metacmd_ID_open_long_braces_break = 193;
-static i32 fcoder_metacmd_ID_open_long_braces_semicolon = 194;
-static i32 fcoder_metacmd_ID_open_matching_file_cpp = 195;
-static i32 fcoder_metacmd_ID_open_panel_hsplit = 196;
-static i32 fcoder_metacmd_ID_open_panel_vsplit = 197;
-static i32 fcoder_metacmd_ID_page_down = 198;
-static i32 fcoder_metacmd_ID_page_up = 199;
-static i32 fcoder_metacmd_ID_paste = 200;
-static i32 fcoder_metacmd_ID_paste_and_indent = 201;
-static i32 fcoder_metacmd_ID_paste_next = 202;
-static i32 fcoder_metacmd_ID_paste_next_and_indent = 203;
-static i32 fcoder_metacmd_ID_place_in_scope = 204;
-static i32 fcoder_metacmd_ID_play_with_a_counter = 205;
-static i32 fcoder_metacmd_ID_profile_clear = 206;
-static i32 fcoder_metacmd_ID_profile_disable = 207;
-static i32 fcoder_metacmd_ID_profile_enable = 208;
-static i32 fcoder_metacmd_ID_profile_inspect = 209;
-static i32 fcoder_metacmd_ID_project_command_F1 = 210;
-static i32 fcoder_metacmd_ID_project_command_F10 = 211;
-static i32 fcoder_metacmd_ID_project_command_F11 = 212;
-static i32 fcoder_metacmd_ID_project_command_F12 = 213;
-static i32 fcoder_metacmd_ID_project_command_F13 = 214;
-static i32 fcoder_metacmd_ID_project_command_F14 = 215;
-static i32 fcoder_metacmd_ID_project_command_F15 = 216;
-static i32 fcoder_metacmd_ID_project_command_F16 = 217;
-static i32 fcoder_metacmd_ID_project_command_F2 = 218;
-static i32 fcoder_metacmd_ID_project_command_F3 = 219;
-static i32 fcoder_metacmd_ID_project_command_F4 = 220;
-static i32 fcoder_metacmd_ID_project_command_F5 = 221;
-static i32 fcoder_metacmd_ID_project_command_F6 = 222;
-static i32 fcoder_metacmd_ID_project_command_F7 = 223;
-static i32 fcoder_metacmd_ID_project_command_F8 = 224;
-static i32 fcoder_metacmd_ID_project_command_F9 = 225;
-static i32 fcoder_metacmd_ID_project_command_lister = 226;
-static i32 fcoder_metacmd_ID_project_fkey_command = 227;
-static i32 fcoder_metacmd_ID_project_go_to_root_directory = 228;
-static i32 fcoder_metacmd_ID_project_reprint = 229;
-static i32 fcoder_metacmd_ID_query_replace = 230;
-static i32 fcoder_metacmd_ID_query_replace_identifier = 231;
-static i32 fcoder_metacmd_ID_query_replace_selection = 232;
-static i32 fcoder_metacmd_ID_quick_swap_buffer = 233;
-static i32 fcoder_metacmd_ID_redo = 234;
-static i32 fcoder_metacmd_ID_redo_all_buffers = 235;
-static i32 fcoder_metacmd_ID_rename_file_query = 236;
-static i32 fcoder_metacmd_ID_reopen = 237;
-static i32 fcoder_metacmd_ID_replace_in_all_buffers = 238;
-static i32 fcoder_metacmd_ID_replace_in_buffer = 239;
-static i32 fcoder_metacmd_ID_replace_in_range = 240;
-static i32 fcoder_metacmd_ID_reverse_search = 241;
-static i32 fcoder_metacmd_ID_reverse_search_identifier = 242;
-static i32 fcoder_metacmd_ID_save = 243;
-static i32 fcoder_metacmd_ID_save_all_dirty_buffers = 244;
-static i32 fcoder_metacmd_ID_save_to_query = 245;
-static i32 fcoder_metacmd_ID_search = 246;
-static i32 fcoder_metacmd_ID_search_identifier = 247;
-static i32 fcoder_metacmd_ID_seek_beginning_of_line = 248;
-static i32 fcoder_metacmd_ID_seek_beginning_of_textual_line = 249;
-static i32 fcoder_metacmd_ID_seek_end_of_line = 250;
-static i32 fcoder_metacmd_ID_seek_end_of_textual_line = 251;
-static i32 fcoder_metacmd_ID_select_all = 252;
-static i32 fcoder_metacmd_ID_select_next_scope_absolute = 253;
-static i32 fcoder_metacmd_ID_select_next_scope_after_current = 254;
-static i32 fcoder_metacmd_ID_select_prev_scope_absolute = 255;
-static i32 fcoder_metacmd_ID_select_prev_top_most_scope = 256;
-static i32 fcoder_metacmd_ID_select_surrounding_scope = 257;
-static i32 fcoder_metacmd_ID_select_surrounding_scope_maximal = 258;
-static i32 fcoder_metacmd_ID_set_eol_mode_from_contents = 259;
-static i32 fcoder_metacmd_ID_set_eol_mode_to_binary = 260;
-static i32 fcoder_metacmd_ID_set_eol_mode_to_crlf = 261;
-static i32 fcoder_metacmd_ID_set_eol_mode_to_lf = 262;
-static i32 fcoder_metacmd_ID_set_face_size = 263;
-static i32 fcoder_metacmd_ID_set_face_size_this_buffer = 264;
-static i32 fcoder_metacmd_ID_set_mark = 265;
-static i32 fcoder_metacmd_ID_set_mode_to_notepad_like = 266;
-static i32 fcoder_metacmd_ID_set_mode_to_original = 267;
-static i32 fcoder_metacmd_ID_setup_build_bat = 268;
-static i32 fcoder_metacmd_ID_setup_build_bat_and_sh = 269;
-static i32 fcoder_metacmd_ID_setup_build_sh = 270;
-static i32 fcoder_metacmd_ID_setup_new_project = 271;
-static i32 fcoder_metacmd_ID_show_filebar = 272;
-static i32 fcoder_metacmd_ID_show_scrollbar = 273;
-static i32 fcoder_metacmd_ID_show_the_log_graph = 274;
-static i32 fcoder_metacmd_ID_snipe_backward_whitespace_or_token_boundary = 275;
-static i32 fcoder_metacmd_ID_snipe_forward_whitespace_or_token_boundary = 276;
-static i32 fcoder_metacmd_ID_snippet_lister = 277;
-static i32 fcoder_metacmd_ID_string_repeat = 278;
-static i32 fcoder_metacmd_ID_suppress_mouse = 279;
-static i32 fcoder_metacmd_ID_swap_panels = 280;
-static i32 fcoder_metacmd_ID_theme_lister = 281;
-static i32 fcoder_metacmd_ID_to_lowercase = 282;
-static i32 fcoder_metacmd_ID_to_uppercase = 283;
-static i32 fcoder_metacmd_ID_toggle_filebar = 284;
-static i32 fcoder_metacmd_ID_toggle_fps_meter = 285;
-static i32 fcoder_metacmd_ID_toggle_fullscreen = 286;
-static i32 fcoder_metacmd_ID_toggle_highlight_enclosing_scopes = 287;
-static i32 fcoder_metacmd_ID_toggle_highlight_line_at_cursor = 288;
-static i32 fcoder_metacmd_ID_toggle_line_numbers = 289;
-static i32 fcoder_metacmd_ID_toggle_line_wrap = 290;
-static i32 fcoder_metacmd_ID_toggle_mouse = 291;
-static i32 fcoder_metacmd_ID_toggle_paren_matching_helper = 292;
-static i32 fcoder_metacmd_ID_toggle_show_whitespace = 293;
-static i32 fcoder_metacmd_ID_toggle_virtual_whitespace = 294;
-static i32 fcoder_metacmd_ID_tutorial_maximize = 295;
-static i32 fcoder_metacmd_ID_tutorial_minimize = 296;
-static i32 fcoder_metacmd_ID_uncomment_line = 297;
-static i32 fcoder_metacmd_ID_undo = 298;
-static i32 fcoder_metacmd_ID_undo_all_buffers = 299;
-static i32 fcoder_metacmd_ID_view_buffer_other_panel = 300;
-static i32 fcoder_metacmd_ID_view_jump_list_with_lister = 301;
-static i32 fcoder_metacmd_ID_word_complete = 302;
-static i32 fcoder_metacmd_ID_word_complete_drop_down = 303;
-static i32 fcoder_metacmd_ID_write_block = 304;
-static i32 fcoder_metacmd_ID_write_hack = 305;
-static i32 fcoder_metacmd_ID_write_note = 306;
-static i32 fcoder_metacmd_ID_write_space = 307;
-static i32 fcoder_metacmd_ID_write_text_and_auto_indent = 308;
-static i32 fcoder_metacmd_ID_write_text_input = 309;
-static i32 fcoder_metacmd_ID_write_todo = 310;
-static i32 fcoder_metacmd_ID_write_underscore = 311;
-static i32 fcoder_metacmd_ID_write_zero_struct = 312;
+static i32 fcoder_metacmd_ID_g4_backspace_char = 52;
+static i32 fcoder_metacmd_ID_g4_build_in_build_panel = 53;
+static i32 fcoder_metacmd_ID_g4_change_active_panel = 54;
+static i32 fcoder_metacmd_ID_g4_change_active_panel_backwards = 55;
+static i32 fcoder_metacmd_ID_g4_close_panel = 56;
+static i32 fcoder_metacmd_ID_g4_command_lister = 57;
+static i32 fcoder_metacmd_ID_g4_cursor_mark_swap_or_insert_underscore = 58;
+static i32 fcoder_metacmd_ID_g4_delete_char = 59;
+static i32 fcoder_metacmd_ID_g4_enter_insert_mode = 60;
+static i32 fcoder_metacmd_ID_g4_goto_next_jump = 61;
+static i32 fcoder_metacmd_ID_g4_goto_prev_jump = 62;
+static i32 fcoder_metacmd_ID_g4_interactive_new = 63;
+static i32 fcoder_metacmd_ID_g4_interactive_open = 64;
+static i32 fcoder_metacmd_ID_g4_keyboard_macro_finish_recording = 65;
+static i32 fcoder_metacmd_ID_g4_keyboard_macro_replay = 66;
+static i32 fcoder_metacmd_ID_g4_keyboard_macro_start_recording = 67;
+static i32 fcoder_metacmd_ID_g4_kill_range = 68;
+static i32 fcoder_metacmd_ID_g4_kill_range_and_insert = 69;
+static i32 fcoder_metacmd_ID_g4_kill_range_and_paste = 70;
+static i32 fcoder_metacmd_ID_g4_list_all_functions_all_buffers_lister = 71;
+static i32 fcoder_metacmd_ID_g4_list_all_functions_current_buffer_lister = 72;
+static i32 fcoder_metacmd_ID_g4_list_all_locations = 73;
+static i32 fcoder_metacmd_ID_g4_modal_null = 74;
+static i32 fcoder_metacmd_ID_g4_move_down = 75;
+static i32 fcoder_metacmd_ID_g4_move_down_to_blank_line_end = 76;
+static i32 fcoder_metacmd_ID_g4_move_left = 77;
+static i32 fcoder_metacmd_ID_g4_move_left_alpha_numeric_boundary = 78;
+static i32 fcoder_metacmd_ID_g4_move_left_alpha_numeric_or_camel_boundary = 79;
+static i32 fcoder_metacmd_ID_g4_move_left_whitespace_boundary = 80;
+static i32 fcoder_metacmd_ID_g4_move_line_down = 81;
+static i32 fcoder_metacmd_ID_g4_move_line_up = 82;
+static i32 fcoder_metacmd_ID_g4_move_right = 83;
+static i32 fcoder_metacmd_ID_g4_move_right_alpha_numeric_boundary = 84;
+static i32 fcoder_metacmd_ID_g4_move_right_alpha_numeric_or_camel_boundary = 85;
+static i32 fcoder_metacmd_ID_g4_move_right_whitespace_boundary = 86;
+static i32 fcoder_metacmd_ID_g4_move_up = 87;
+static i32 fcoder_metacmd_ID_g4_move_up_to_blank_line_end = 88;
+static i32 fcoder_metacmd_ID_g4_n_keys = 89;
+static i32 fcoder_metacmd_ID_g4_open_in_other = 90;
+static i32 fcoder_metacmd_ID_g4_open_panel_vsplit = 91;
+static i32 fcoder_metacmd_ID_g4_page_down = 92;
+static i32 fcoder_metacmd_ID_g4_page_up = 93;
+static i32 fcoder_metacmd_ID_g4_paste = 94;
+static i32 fcoder_metacmd_ID_g4_paste_next = 95;
+static i32 fcoder_metacmd_ID_g4_project_command_lister = 96;
+static i32 fcoder_metacmd_ID_g4_return_to_nav_mode = 97;
+static i32 fcoder_metacmd_ID_g4_reverse_search = 98;
+static i32 fcoder_metacmd_ID_g4_save_all_or_shift_return = 99;
+static i32 fcoder_metacmd_ID_g4_save_or_return = 100;
+static i32 fcoder_metacmd_ID_g4_search = 101;
+static i32 fcoder_metacmd_ID_g4_set_mark = 102;
+static i32 fcoder_metacmd_ID_g4_write_text_input = 103;
+static i32 fcoder_metacmd_ID_go_to_user_directory = 104;
+static i32 fcoder_metacmd_ID_goto_beginning_of_file = 105;
+static i32 fcoder_metacmd_ID_goto_end_of_file = 106;
+static i32 fcoder_metacmd_ID_goto_first_jump = 107;
+static i32 fcoder_metacmd_ID_goto_first_jump_same_panel_sticky = 108;
+static i32 fcoder_metacmd_ID_goto_jump_at_cursor = 109;
+static i32 fcoder_metacmd_ID_goto_jump_at_cursor_same_panel = 110;
+static i32 fcoder_metacmd_ID_goto_line = 111;
+static i32 fcoder_metacmd_ID_goto_next_jump = 112;
+static i32 fcoder_metacmd_ID_goto_next_jump_no_skips = 113;
+static i32 fcoder_metacmd_ID_goto_prev_jump = 114;
+static i32 fcoder_metacmd_ID_goto_prev_jump_no_skips = 115;
+static i32 fcoder_metacmd_ID_hide_filebar = 116;
+static i32 fcoder_metacmd_ID_hide_scrollbar = 117;
+static i32 fcoder_metacmd_ID_hit_sfx = 118;
+static i32 fcoder_metacmd_ID_hms_demo_tutorial = 119;
+static i32 fcoder_metacmd_ID_if0_off = 120;
+static i32 fcoder_metacmd_ID_if_read_only_goto_position = 121;
+static i32 fcoder_metacmd_ID_if_read_only_goto_position_same_panel = 122;
+static i32 fcoder_metacmd_ID_increase_face_size = 123;
+static i32 fcoder_metacmd_ID_interactive_kill_buffer = 124;
+static i32 fcoder_metacmd_ID_interactive_new = 125;
+static i32 fcoder_metacmd_ID_interactive_open = 126;
+static i32 fcoder_metacmd_ID_interactive_open_or_new = 127;
+static i32 fcoder_metacmd_ID_interactive_switch_buffer = 128;
+static i32 fcoder_metacmd_ID_jump_to_definition = 129;
+static i32 fcoder_metacmd_ID_jump_to_definition_at_cursor = 130;
+static i32 fcoder_metacmd_ID_jump_to_last_point = 131;
+static i32 fcoder_metacmd_ID_keyboard_macro_finish_recording = 132;
+static i32 fcoder_metacmd_ID_keyboard_macro_replay = 133;
+static i32 fcoder_metacmd_ID_keyboard_macro_start_recording = 134;
+static i32 fcoder_metacmd_ID_kill_buffer = 135;
+static i32 fcoder_metacmd_ID_kill_tutorial = 136;
+static i32 fcoder_metacmd_ID_left_adjust_view = 137;
+static i32 fcoder_metacmd_ID_list_all_functions_all_buffers = 138;
+static i32 fcoder_metacmd_ID_list_all_functions_all_buffers_lister = 139;
+static i32 fcoder_metacmd_ID_list_all_functions_current_buffer = 140;
+static i32 fcoder_metacmd_ID_list_all_functions_current_buffer_lister = 141;
+static i32 fcoder_metacmd_ID_list_all_locations = 142;
+static i32 fcoder_metacmd_ID_list_all_locations_case_insensitive = 143;
+static i32 fcoder_metacmd_ID_list_all_locations_of_identifier = 144;
+static i32 fcoder_metacmd_ID_list_all_locations_of_identifier_case_insensitive = 145;
+static i32 fcoder_metacmd_ID_list_all_locations_of_selection = 146;
+static i32 fcoder_metacmd_ID_list_all_locations_of_selection_case_insensitive = 147;
+static i32 fcoder_metacmd_ID_list_all_locations_of_type_definition = 148;
+static i32 fcoder_metacmd_ID_list_all_locations_of_type_definition_of_identifier = 149;
+static i32 fcoder_metacmd_ID_list_all_substring_locations = 150;
+static i32 fcoder_metacmd_ID_list_all_substring_locations_case_insensitive = 151;
+static i32 fcoder_metacmd_ID_load_project = 152;
+static i32 fcoder_metacmd_ID_load_theme_current_buffer = 153;
+static i32 fcoder_metacmd_ID_load_themes_default_folder = 154;
+static i32 fcoder_metacmd_ID_load_themes_hot_directory = 155;
+static i32 fcoder_metacmd_ID_make_directory_query = 156;
+static i32 fcoder_metacmd_ID_miblo_decrement_basic = 157;
+static i32 fcoder_metacmd_ID_miblo_decrement_time_stamp = 158;
+static i32 fcoder_metacmd_ID_miblo_decrement_time_stamp_minute = 159;
+static i32 fcoder_metacmd_ID_miblo_increment_basic = 160;
+static i32 fcoder_metacmd_ID_miblo_increment_time_stamp = 161;
+static i32 fcoder_metacmd_ID_miblo_increment_time_stamp_minute = 162;
+static i32 fcoder_metacmd_ID_mouse_wheel_change_face_size = 163;
+static i32 fcoder_metacmd_ID_mouse_wheel_scroll = 164;
+static i32 fcoder_metacmd_ID_move_down = 165;
+static i32 fcoder_metacmd_ID_move_down_10 = 166;
+static i32 fcoder_metacmd_ID_move_down_textual = 167;
+static i32 fcoder_metacmd_ID_move_down_to_blank_line = 168;
+static i32 fcoder_metacmd_ID_move_down_to_blank_line_end = 169;
+static i32 fcoder_metacmd_ID_move_down_to_blank_line_skip_whitespace = 170;
+static i32 fcoder_metacmd_ID_move_left = 171;
+static i32 fcoder_metacmd_ID_move_left_alpha_numeric_boundary = 172;
+static i32 fcoder_metacmd_ID_move_left_alpha_numeric_or_camel_boundary = 173;
+static i32 fcoder_metacmd_ID_move_left_token_boundary = 174;
+static i32 fcoder_metacmd_ID_move_left_whitespace_boundary = 175;
+static i32 fcoder_metacmd_ID_move_left_whitespace_or_token_boundary = 176;
+static i32 fcoder_metacmd_ID_move_line_down = 177;
+static i32 fcoder_metacmd_ID_move_line_up = 178;
+static i32 fcoder_metacmd_ID_move_right = 179;
+static i32 fcoder_metacmd_ID_move_right_alpha_numeric_boundary = 180;
+static i32 fcoder_metacmd_ID_move_right_alpha_numeric_or_camel_boundary = 181;
+static i32 fcoder_metacmd_ID_move_right_token_boundary = 182;
+static i32 fcoder_metacmd_ID_move_right_whitespace_boundary = 183;
+static i32 fcoder_metacmd_ID_move_right_whitespace_or_token_boundary = 184;
+static i32 fcoder_metacmd_ID_move_up = 185;
+static i32 fcoder_metacmd_ID_move_up_10 = 186;
+static i32 fcoder_metacmd_ID_move_up_to_blank_line = 187;
+static i32 fcoder_metacmd_ID_move_up_to_blank_line_end = 188;
+static i32 fcoder_metacmd_ID_move_up_to_blank_line_skip_whitespace = 189;
+static i32 fcoder_metacmd_ID_multi_paste = 190;
+static i32 fcoder_metacmd_ID_multi_paste_interactive = 191;
+static i32 fcoder_metacmd_ID_multi_paste_interactive_quick = 192;
+static i32 fcoder_metacmd_ID_music_start = 193;
+static i32 fcoder_metacmd_ID_music_stop = 194;
+static i32 fcoder_metacmd_ID_open_all_code = 195;
+static i32 fcoder_metacmd_ID_open_all_code_recursive = 196;
+static i32 fcoder_metacmd_ID_open_file_in_quotes = 197;
+static i32 fcoder_metacmd_ID_open_in_other = 198;
+static i32 fcoder_metacmd_ID_open_long_braces = 199;
+static i32 fcoder_metacmd_ID_open_long_braces_break = 200;
+static i32 fcoder_metacmd_ID_open_long_braces_semicolon = 201;
+static i32 fcoder_metacmd_ID_open_matching_file_cpp = 202;
+static i32 fcoder_metacmd_ID_open_panel_hsplit = 203;
+static i32 fcoder_metacmd_ID_open_panel_vsplit = 204;
+static i32 fcoder_metacmd_ID_page_down = 205;
+static i32 fcoder_metacmd_ID_page_up = 206;
+static i32 fcoder_metacmd_ID_paste = 207;
+static i32 fcoder_metacmd_ID_paste_and_indent = 208;
+static i32 fcoder_metacmd_ID_paste_next = 209;
+static i32 fcoder_metacmd_ID_paste_next_and_indent = 210;
+static i32 fcoder_metacmd_ID_place_in_scope = 211;
+static i32 fcoder_metacmd_ID_play_with_a_counter = 212;
+static i32 fcoder_metacmd_ID_profile_clear = 213;
+static i32 fcoder_metacmd_ID_profile_disable = 214;
+static i32 fcoder_metacmd_ID_profile_enable = 215;
+static i32 fcoder_metacmd_ID_profile_inspect = 216;
+static i32 fcoder_metacmd_ID_project_command_F1 = 217;
+static i32 fcoder_metacmd_ID_project_command_F10 = 218;
+static i32 fcoder_metacmd_ID_project_command_F11 = 219;
+static i32 fcoder_metacmd_ID_project_command_F12 = 220;
+static i32 fcoder_metacmd_ID_project_command_F13 = 221;
+static i32 fcoder_metacmd_ID_project_command_F14 = 222;
+static i32 fcoder_metacmd_ID_project_command_F15 = 223;
+static i32 fcoder_metacmd_ID_project_command_F16 = 224;
+static i32 fcoder_metacmd_ID_project_command_F2 = 225;
+static i32 fcoder_metacmd_ID_project_command_F3 = 226;
+static i32 fcoder_metacmd_ID_project_command_F4 = 227;
+static i32 fcoder_metacmd_ID_project_command_F5 = 228;
+static i32 fcoder_metacmd_ID_project_command_F6 = 229;
+static i32 fcoder_metacmd_ID_project_command_F7 = 230;
+static i32 fcoder_metacmd_ID_project_command_F8 = 231;
+static i32 fcoder_metacmd_ID_project_command_F9 = 232;
+static i32 fcoder_metacmd_ID_project_command_lister = 233;
+static i32 fcoder_metacmd_ID_project_fkey_command = 234;
+static i32 fcoder_metacmd_ID_project_go_to_root_directory = 235;
+static i32 fcoder_metacmd_ID_project_reprint = 236;
+static i32 fcoder_metacmd_ID_query_replace = 237;
+static i32 fcoder_metacmd_ID_query_replace_identifier = 238;
+static i32 fcoder_metacmd_ID_query_replace_selection = 239;
+static i32 fcoder_metacmd_ID_quick_swap_buffer = 240;
+static i32 fcoder_metacmd_ID_redo = 241;
+static i32 fcoder_metacmd_ID_redo_all_buffers = 242;
+static i32 fcoder_metacmd_ID_rename_file_query = 243;
+static i32 fcoder_metacmd_ID_reopen = 244;
+static i32 fcoder_metacmd_ID_replace_in_all_buffers = 245;
+static i32 fcoder_metacmd_ID_replace_in_buffer = 246;
+static i32 fcoder_metacmd_ID_replace_in_range = 247;
+static i32 fcoder_metacmd_ID_reverse_search = 248;
+static i32 fcoder_metacmd_ID_reverse_search_identifier = 249;
+static i32 fcoder_metacmd_ID_save = 250;
+static i32 fcoder_metacmd_ID_save_all_dirty_buffers = 251;
+static i32 fcoder_metacmd_ID_save_to_query = 252;
+static i32 fcoder_metacmd_ID_search = 253;
+static i32 fcoder_metacmd_ID_search_identifier = 254;
+static i32 fcoder_metacmd_ID_seek_beginning_of_line = 255;
+static i32 fcoder_metacmd_ID_seek_beginning_of_textual_line = 256;
+static i32 fcoder_metacmd_ID_seek_end_of_line = 257;
+static i32 fcoder_metacmd_ID_seek_end_of_textual_line = 258;
+static i32 fcoder_metacmd_ID_select_all = 259;
+static i32 fcoder_metacmd_ID_select_next_scope_absolute = 260;
+static i32 fcoder_metacmd_ID_select_next_scope_after_current = 261;
+static i32 fcoder_metacmd_ID_select_prev_scope_absolute = 262;
+static i32 fcoder_metacmd_ID_select_prev_top_most_scope = 263;
+static i32 fcoder_metacmd_ID_select_surrounding_scope = 264;
+static i32 fcoder_metacmd_ID_select_surrounding_scope_maximal = 265;
+static i32 fcoder_metacmd_ID_set_eol_mode_from_contents = 266;
+static i32 fcoder_metacmd_ID_set_eol_mode_to_binary = 267;
+static i32 fcoder_metacmd_ID_set_eol_mode_to_crlf = 268;
+static i32 fcoder_metacmd_ID_set_eol_mode_to_lf = 269;
+static i32 fcoder_metacmd_ID_set_face_size = 270;
+static i32 fcoder_metacmd_ID_set_face_size_this_buffer = 271;
+static i32 fcoder_metacmd_ID_set_mark = 272;
+static i32 fcoder_metacmd_ID_set_mode_to_notepad_like = 273;
+static i32 fcoder_metacmd_ID_set_mode_to_original = 274;
+static i32 fcoder_metacmd_ID_setup_build_bat = 275;
+static i32 fcoder_metacmd_ID_setup_build_bat_and_sh = 276;
+static i32 fcoder_metacmd_ID_setup_build_sh = 277;
+static i32 fcoder_metacmd_ID_setup_new_project = 278;
+static i32 fcoder_metacmd_ID_show_filebar = 279;
+static i32 fcoder_metacmd_ID_show_scrollbar = 280;
+static i32 fcoder_metacmd_ID_show_the_log_graph = 281;
+static i32 fcoder_metacmd_ID_snipe_backward_whitespace_or_token_boundary = 282;
+static i32 fcoder_metacmd_ID_snipe_forward_whitespace_or_token_boundary = 283;
+static i32 fcoder_metacmd_ID_snippet_lister = 284;
+static i32 fcoder_metacmd_ID_string_repeat = 285;
+static i32 fcoder_metacmd_ID_suppress_mouse = 286;
+static i32 fcoder_metacmd_ID_swap_panels = 287;
+static i32 fcoder_metacmd_ID_theme_lister = 288;
+static i32 fcoder_metacmd_ID_to_lowercase = 289;
+static i32 fcoder_metacmd_ID_to_uppercase = 290;
+static i32 fcoder_metacmd_ID_toggle_filebar = 291;
+static i32 fcoder_metacmd_ID_toggle_fps_meter = 292;
+static i32 fcoder_metacmd_ID_toggle_fullscreen = 293;
+static i32 fcoder_metacmd_ID_toggle_highlight_enclosing_scopes = 294;
+static i32 fcoder_metacmd_ID_toggle_highlight_line_at_cursor = 295;
+static i32 fcoder_metacmd_ID_toggle_line_numbers = 296;
+static i32 fcoder_metacmd_ID_toggle_line_wrap = 297;
+static i32 fcoder_metacmd_ID_toggle_mouse = 298;
+static i32 fcoder_metacmd_ID_toggle_paren_matching_helper = 299;
+static i32 fcoder_metacmd_ID_toggle_show_whitespace = 300;
+static i32 fcoder_metacmd_ID_toggle_virtual_whitespace = 301;
+static i32 fcoder_metacmd_ID_tutorial_maximize = 302;
+static i32 fcoder_metacmd_ID_tutorial_minimize = 303;
+static i32 fcoder_metacmd_ID_uncomment_line = 304;
+static i32 fcoder_metacmd_ID_undo = 305;
+static i32 fcoder_metacmd_ID_undo_all_buffers = 306;
+static i32 fcoder_metacmd_ID_view_buffer_other_panel = 307;
+static i32 fcoder_metacmd_ID_view_jump_list_with_lister = 308;
+static i32 fcoder_metacmd_ID_word_complete = 309;
+static i32 fcoder_metacmd_ID_word_complete_drop_down = 310;
+static i32 fcoder_metacmd_ID_write_block = 311;
+static i32 fcoder_metacmd_ID_write_hack = 312;
+static i32 fcoder_metacmd_ID_write_note = 313;
+static i32 fcoder_metacmd_ID_write_space = 314;
+static i32 fcoder_metacmd_ID_write_text_and_auto_indent = 315;
+static i32 fcoder_metacmd_ID_write_text_input = 316;
+static i32 fcoder_metacmd_ID_write_todo = 317;
+static i32 fcoder_metacmd_ID_write_underscore = 318;
+static i32 fcoder_metacmd_ID_write_zero_struct = 319;
 #endif
