@@ -3,7 +3,7 @@ keys_global = {
 
   // NOTE(caleb): having modal keys in global may be a real problem later on.
   // so some of these will need to trigger insert mode.
-
+  { "insert_underscore", "Space", "Shift" }
 };
 
 keys_file = {
@@ -46,23 +46,21 @@ keys_file = {
   { "g4_list_all_functions_current_buffer_lister",   "I",                              },
   { "g4_list_all_functions_all_buffers_lister",      "I",       "Shift",               },
 
-    { "if_read_only_goto_position",  "Return" },
-    { "if_read_only_goto_position_same_panel", "Return", "Shift" },
-
 
   { "g4_keyboard_macro_replay",                 "U",                                   },
   { "g4_keyboard_macro_start_recording" ,       "U",     "Control",                    },
   { "g4_keyboard_macro_finish_recording",       "U",     "Alt",                        },
 
+  // MAYBE(caleb): panel and buffer commands should be on separate keys
   { "g4_change_active_panel",                   "B",                                   },
   { "g4_change_active_panel_backwards",         "B",     "Shift",                      },
   { "quick_swap_buffer",                        "B",     "Control",                    },
-  { "interactive_switch_buffer",                 "B",     "Alt",                        },
-  { "interactive_switch_buffer",                 "B",     "Control", "Alt",           },
+  { "interactive_switch_buffer",                "B",     "Alt",                        },
+  { "interactive_switch_buffer",                "B",     "Control", "Alt",           },
 
-  { "g4_open_panel_vsplit",                        "Equal",                      },
-  { "open_panel_hsplit",                           "Equal",      "Shift"         },
-  { "g4_close_panel",                              "Minus",                     },
+  { "g4_open_panel_vsplit",                     "Equal",                      },
+  { "open_panel_hsplit",                        "Equal",      "Shift"         },
+  { "g4_close_panel",                           "Minus",                     },
 
   { "g4_build_in_build_panel",                  "M",                                   },
   { "change_to_build_panel",                    "M",     "Alt",                        },
@@ -80,8 +78,8 @@ keys_file = {
   { "g4_command_lister",                        "X",     "Alt",                        },
   { "g4_project_command_lister",                "X",     "Shift",                      },
 
-  { "execute_any_cli",                          "Tick",                      },
-  { "execute_previous_cli",                     "Tick",       "Alt"          },
+  { "g4_execute_any_cli",                       "Tick",                                },
+  { "g4_execute_previous_cli",                  "Tick",       "Alt"                    },
   
   { "g4_n_keys",                                "1",                                   },
   { "g4_n_keys",                                "2",                                   },
@@ -95,14 +93,14 @@ keys_file = {
   { "g4_n_keys",                                "0",                                   },
 
 
-  { "project_go_to_root_directory",             "Period",                    },
+  { "g4_project_go_to_root_directory",          "Period",                              },
+  { "g4_load_project",                          "Period",           "Shift",           },
 
+  { "g4_delete_char",                           "Delete"                               },
+  { "g4_backspace_char",                        "Backspace"                            },
 
-  { "g4_delete_char",            "Delete" },
-  { "g4_backspace_char",         "Backspace" },
-
-  { "g4_save_or_return",  "Return" },
-  { "g4_save_all_or_shift_return", "Return", "Shift" },
+  { "g4_save_or_return",                        "Return"                               },
+  { "g4_save_all_or_shift_return",              "Return",           "Shift"            },
 
   // TODO(caleb): add tab commands
   // TODO(caleb): add visual-block commands
@@ -135,15 +133,21 @@ keys_file = {
   { "g4_modal_null", "Y", "Shift", }, // TODO(caleb): bind to copy commands
   { "g4_modal_null", "Z", "Shift", },
 
+  { "g4_modal_null", "Comma",         },
+  { "g4_modal_null", "Semicolon",     }, // TODO(caleb): bind to comment commands
+  { "g4_modal_null", "Quote",         }, // TODO(caleb): bind to wrap in quotes
+  { "g4_modal_null", "LeftBracket",   }, // TODO(caleb): bind to scope commands
+  { "g4_modal_null", "RightBracket",  }, // TODO(caleb): bind to scope commands
+  { "g4_modal_null", "ForwardSlash",  }, // TODO(caleb): bind to search commands
+  { "g4_modal_null", "BackwardSlash", }, 
 
   { "g4_modal_null", "Comma",        "Shift", },
-  { "g4_modal_null", "SemiColon",    "Shift", }, // TODO(caleb): bind to comment commands
+  { "g4_modal_null", "Semicolon",    "Shift", }, // TODO(caleb): bind to comment commands
   { "g4_modal_null", "Quote",        "Shift", }, // TODO(caleb): bind to wrap in quotes
   { "g4_modal_null", "LeftBracket",  "Shift", }, // TODO(caleb): bind to scope commands
   { "g4_modal_null", "RightBracket", "Shift", }, // TODO(caleb): bind to scope commands
   { "g4_modal_null", "ForwardSlash", "Shift", }, // TODO(caleb): bind to search commands
   { "g4_modal_null", "BackwardSlash", "Shift", }, 
-  { "g4_modal_null", "Period", "Shift", }, // TODO(caleb): bind to project commands
 
   { "g4_modal_null",                                "1",   "Shift",                                },
   { "g4_modal_null",                                "2",   "Shift",                                },
@@ -156,8 +160,8 @@ keys_file = {
   { "g4_modal_null",                                "9",   "Shift",                                },
   { "g4_modal_null",                                "0",   "Shift",                                },
 
-  { "g4_modal_null",                              "Minus",  "Shfit",                   },
-  { "g4_modal_null",                              "Tick",  "Shfit",                   },
+  { "g4_modal_null",                              "Minus",  "Shift",                  },
+  { "g4_modal_null",                              "Tick",  "Shift",                   },
 
 
 

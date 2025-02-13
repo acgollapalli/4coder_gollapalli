@@ -7,12 +7,19 @@ SDG                                                                             
 #include <assert.h>
 
 enum g4_EditorMode {
-  g4_NavigateMode,
-  g4_InsertMode,
-  g4_BlockMode, // TODO(caleb): Implement this
-  g4_DoMany,
+    g4_NavigateMode,
+    g4_InsertMode,
+    g4_BlockMode, // TODO(caleb): Implement this
+    g4_DoMany,
 };
 
+// TODO(caleb): consider simplifying using command maps
+// see: https://4coder.handmade.network/forums/articles/t/7319-customization_layer_-_getting_started__4coder_4.1_
+// and 4coder_default_bindings.cpp
+
+// TODO(caleb): for modifiers consider adding some kind of frequency tracking of keys in navigation mode
+// and provide warnings in the messages buffer when you have a modifier being used more than the vanilla binding
+// order: <no-modifiers> -> Shift -> Ctrl -> Alt -> Ctrl-Shift -> Ctrl-Alt
 static g4_EditorMode g4_CurrentMode = g4_NavigateMode;
 static int g4_ThisManyTimes = 0;
 
@@ -21,30 +28,30 @@ static int g4_ThisManyTimes = 0;
 CUSTOM_COMMAND_SIG(g4_write_text_input)
 CUSTOM_DOC("Inserts text from a keycode event")
 {
-  User_Input in = get_current_input(app);		
-  assert(in.event.kind == InputEventKind_KeyStroke); 
-  assert(in.event.key.first_dependent_text->kind == InputEventKind_TextInsert); 
-  String_Const_u8 ins_st= in.event.key.first_dependent_text->text.string;		
-  write_text(app, ins_st);
+    User_Input in = get_current_input(app);		
+    assert(in.event.kind == InputEventKind_KeyStroke); 
+    assert(in.event.key.first_dependent_text->kind == InputEventKind_TextInsert); 
+    String_Const_u8 ins_st= in.event.key.first_dependent_text->text.string;		
+    write_text(app, ins_st);
 }
 
 // NOTE(caleb): if you have stuff executing twice
 // then come back here to look at this macro
 #define N_MODAL_INSERT_BLOCK(block, insert)	{		\
-	switch (g4_CurrentMode) {					    \
-	case g4_NavigateMode:						    \
-	  block										    \
-	  break;									    \
-	case g4_InsertMode:							    \
-	  insert(app);					                \
-	  break;									    \
-	case g4_DoMany:								    \
-	  g4_CurrentMode = g4_NavigateMode;				\
-	  while(g4_ThisManyTimes-- > 0)					\
-      block											\
-	  break;										\
-	}												\
-  }
+switch (g4_CurrentMode) {					    \
+case g4_NavigateMode:						    \
+block										    \
+break;									    \
+case g4_InsertMode:							    \
+insert(app);					                \
+break;									    \
+case g4_DoMany:								    \
+g4_CurrentMode = g4_NavigateMode;				\
+while(g4_ThisManyTimes-- > 0)					\
+block											\
+break;										\
+}												\
+}
 
 #define N_MODAL_INSERT_COMMAND(command, insert) N_MODAL_INSERT_BLOCK({command(app);}, insert)
 #define N_MODAL_BLOCK(block) N_MODAL_INSERT_BLOCK(block, g4_write_text_input)
@@ -53,23 +60,23 @@ CUSTOM_DOC("Inserts text from a keycode event")
 // NOTE(caleb): if you have stuff executing twice
 // then come back here to look at this macro
 #define MODAL_INSERT_BLOCK(block, insert)	{		\
-	switch (g4_CurrentMode) {					    \
-	case g4_NavigateMode:						    \
-	  block										    \
-	  break;									    \
-	case g4_InsertMode:							    \
-	  insert(app);					                \
-	  break;									    \
-	case g4_DoMany:								    \
-	  block											\
-	  break;										\
-	}												\
-  }
+switch (g4_CurrentMode) {					    \
+case g4_NavigateMode:						    \
+block										    \
+break;									    \
+case g4_InsertMode:							    \
+insert(app);					                \
+break;									    \
+case g4_DoMany:								    \
+block											\
+break;										\
+}												\
+}
 #define MODAL_COMMAND(command) MODAL_INSERT_BLOCK({command(app);}, g4_write_text_input)
 #define MODAL_INSERT(command) MODAL_INSERT_BLOCK({ \
-	  command(app);										\
-	  g4_CurrentMode = g4_InsertMode;					\
-	}, g4_write_text_input)
+command(app);										\
+g4_CurrentMode = g4_InsertMode;					\
+}, g4_write_text_input)
 
 /*
   Preliminaries
@@ -80,32 +87,32 @@ CUSTOM_DOC("Exits mode or command. Returns to Navigation Mode")
 {
 	g4_CurrentMode = g4_NavigateMode;
 	g4_ThisManyTimes = 0;
-  }
+}
 
 CUSTOM_COMMAND_SIG(g4_enter_insert_mode)
 CUSTOM_DOC("In Navigate Mode, enters insert mode.")
 N_MODAL_BLOCK({
-  g4_CurrentMode = g4_InsertMode;
-  g4_ThisManyTimes = 0;
-})
+                  g4_CurrentMode = g4_InsertMode;
+                  g4_ThisManyTimes = 0;
+              })
 
 CUSTOM_COMMAND_SIG(g4_n_keys)
 CUSTOM_DOC("In Do-Many mode, sets how many times an action is executed, else inserts text.")
 {
-  switch (g4_CurrentMode) {
-  case g4_NavigateMode:
-	project_fkey_command(app);
-	break;
-  case g4_InsertMode:							    
-	g4_write_text_input(app);					                
-	break;
-  case g4_DoMany:
-	User_Input in = get_current_input(app);
-	String_Const_u8 ins_st= in.event.key.first_dependent_text->text.string;;
-	g4_ThisManyTimes *= 10;
-	g4_ThisManyTimes += (u8)(*ins_st.str) - '0';
-	break;
-  }
+    switch (g4_CurrentMode) {
+        case g4_NavigateMode:
+        project_fkey_command(app);
+        break;
+        case g4_InsertMode:							    
+        g4_write_text_input(app);					                
+        break;
+        case g4_DoMany:
+        User_Input in = get_current_input(app);
+        String_Const_u8 ins_st= in.event.key.first_dependent_text->text.string;
+        g4_ThisManyTimes *= 10;
+        g4_ThisManyTimes += (u8)(*ins_st.str) - '0';
+        break;
+    }
 }
 
 CUSTOM_COMMAND_SIG(g4_modal_null)
@@ -267,22 +274,22 @@ MODAL_INSERT(delete_range)
 CUSTOM_COMMAND_SIG(g4_paste)
 CUSTOM_DOC("In Navigate Mode, kills the range between mark and cursor")
 N_MODAL_BLOCK({
-	paste(app);
-  })
+                  paste(app);
+              })
 
 CUSTOM_COMMAND_SIG(g4_kill_range_and_paste)
 CUSTOM_DOC("In Navigate Mode, kills the range between mark and cursor")
 N_MODAL_BLOCK({
-	delete_range(app);
-	paste(app);
-  })
+                  delete_range(app);
+                  paste(app);
+              })
 
 CUSTOM_COMMAND_SIG(g4_paste_next)
 CUSTOM_DOC("In Navigate Mode, replaces the previous paste with the next item from the clipboard")
 N_MODAL_BLOCK({
-	delete_range(app);
-	paste_next(app);
-  })
+                  delete_range(app);
+                  paste_next(app);
+              })
 
 CUSTOM_COMMAND_SIG(g4_keyboard_macro_replay)
 CUSTOM_DOC("In Navigate Mode, replays the macro. In Do-Many mode does the macro n-many times, else inserts text")
@@ -299,12 +306,20 @@ MODAL_COMMAND(keyboard_macro_finish_recording)
 
 
 /*
-  Build commands
+  Build/run commands
 */
 
 CUSTOM_COMMAND_SIG(g4_build_in_build_panel)
 CUSTOM_DOC("In Navigate Mode, build in build panel")
 MODAL_COMMAND(build_in_build_panel)
+
+CUSTOM_COMMAND_SIG(g4_execute_any_cli)
+CUSTOM_DOC("In Navigate Mode, execute a cli command")
+MODAL_COMMAND(execute_any_cli)
+
+CUSTOM_COMMAND_SIG(g4_execute_previous_cli)
+CUSTOM_DOC("In Navigate Mode, execute the previous cli command")
+MODAL_COMMAND(execute_previous_cli)
 
 /*
   Lister Funtions
@@ -320,6 +335,15 @@ MODAL_COMMAND(project_command_lister)
 /*
   Project Commands
 */
+CUSTOM_COMMAND_SIG(g4_project_go_to_root_directory)
+CUSTOM_DOC("In navigate mode, changes 4coder's hot directory to the root directory of the currently loaded project. With no loaded project nothing hapepns.")
+MODAL_COMMAND(project_go_to_root_directory)
+
+CUSTOM_COMMAND_SIG(g4_load_project)
+CUSTOM_DOC("Looks for a project.4coder file in the current directory and tries to load it.  Looks in parent directories until a project file is found or there are no more parents.")
+MODAL_COMMAND(load_project)
+
+
 
 /*
   Search Commands
