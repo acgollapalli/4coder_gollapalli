@@ -10,7 +10,6 @@
 #include "4coder_default_include.cpp"
 
 // NOTE(allen): Users can declare their own managed IDs here.
-#include "g4_init.cpp"
 
 #if !defined(META_PASS)
 #include "generated/managed_id_metadata.cpp"

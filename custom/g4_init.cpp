@@ -13,6 +13,11 @@ enum g4_EditorMode {
     g4_DoMany,
 };
 
+CUSTOM_ID(colors, defcolor_navigate_mode)
+CUSTOM_ID(colors, defcolor_insert_mode)
+CUSTOM_ID(colors, defcolor_block_mode)
+CUSTOM_ID(colors, defcolor_do_many)
+
 // TODO(caleb): consider simplifying using command maps
 // see: https://4coder.handmade.network/forums/articles/t/7319-customization_layer_-_getting_started__4coder_4.1_
 // and 4coder_default_bindings.cpp
@@ -23,17 +28,16 @@ enum g4_EditorMode {
 static g4_EditorMode g4_CurrentMode = g4_NavigateMode;
 static int g4_ThisManyTimes = 0;
 
-// TODO(caleb): The RIGHT thing to do is to make use
-// of the bindings api
-CUSTOM_COMMAND_SIG(g4_write_text_input)
-CUSTOM_DOC("Inserts text from a keycode event")
-{
-    User_Input in = get_current_input(app);		
-    assert(in.event.kind == InputEventKind_KeyStroke); 
-    assert(in.event.key.first_dependent_text->kind == InputEventKind_TextInsert); 
-    String_Const_u8 ins_st= in.event.key.first_dependent_text->text.string;		
-    write_text(app, ins_st);
+function FColor g4_cursor_color() {
+    switch (g4_CurrentMode) {
+        case g4_NavigateMode: 	return fcolor_id(defcolor_navigate_mode);
+        case g4_InsertMode: 	  return fcolor_id(defcolor_insert_mode);
+        case g4_BlockMode:		return fcolor_id(defcolor_block_mode);
+        case g4_DoMany:		   return fcolor_id(defcolor_do_many);
+        default:				  return fcolor_id(defcolor_cursor);
+    };
 }
+
 
 // NOTE(caleb): if you have stuff executing twice
 // then come back here to look at this macro
@@ -54,7 +58,7 @@ break;										\
 }
 
 #define N_MODAL_INSERT_COMMAND(command, insert) N_MODAL_INSERT_BLOCK({command(app);}, insert)
-#define N_MODAL_BLOCK(block) N_MODAL_INSERT_BLOCK(block, g4_write_text_input)
+#define N_MODAL_BLOCK(block) N_MODAL_INSERT_BLOCK(block, leave_current_input_unhandled)
 #define N_MODAL_COMMAND(command) N_MODAL_BLOCK({command(app);})
 
 // NOTE(caleb): if you have stuff executing twice
@@ -72,11 +76,11 @@ block											\
 break;										\
 }												\
 }
-#define MODAL_COMMAND(command) MODAL_INSERT_BLOCK({command(app);}, g4_write_text_input)
+#define MODAL_COMMAND(command) MODAL_INSERT_BLOCK({command(app);}, leave_current_input_unhandled)
 #define MODAL_INSERT(command) MODAL_INSERT_BLOCK({ \
 command(app);										\
 g4_CurrentMode = g4_InsertMode;					\
-}, g4_write_text_input)
+}, leave_current_input_unhandled)
 
 /*
   Preliminaries
@@ -85,8 +89,8 @@ g4_CurrentMode = g4_InsertMode;					\
 CUSTOM_COMMAND_SIG(g4_return_to_nav_mode)
 CUSTOM_DOC("Exits mode or command. Returns to Navigation Mode")
 {
-	g4_CurrentMode = g4_NavigateMode;
-	g4_ThisManyTimes = 0;
+    g4_CurrentMode = g4_NavigateMode;
+    g4_ThisManyTimes = 0;
 }
 
 CUSTOM_COMMAND_SIG(g4_enter_insert_mode)
@@ -104,7 +108,7 @@ CUSTOM_DOC("In Do-Many mode, sets how many times an action is executed, else ins
         project_fkey_command(app);
         break;
         case g4_InsertMode:							    
-        g4_write_text_input(app);					                
+        leave_current_input_unhandled(app);					                
         break;
         case g4_DoMany:
         User_Input in = get_current_input(app);
@@ -117,7 +121,7 @@ CUSTOM_DOC("In Do-Many mode, sets how many times an action is executed, else ins
 
 CUSTOM_COMMAND_SIG(g4_modal_null)
 CUSTOM_DOC("In navigation mode, don't do anything")
-MODAL_INSERT_BLOCK({}, g4_write_text_input)
+MODAL_INSERT_BLOCK({}, leave_current_input_unhandled)
 
 /*
   Navigation Commands
@@ -245,10 +249,21 @@ CUSTOM_COMMAND_SIG(g4_open_panel_vsplit)
 CUSTOM_DOC("In Navigate Mode, open_panel_vsplit")
 MODAL_COMMAND(open_panel_vsplit)
 
+CUSTOM_COMMAND_SIG(g4_open_panel_hsplit)
+CUSTOM_DOC("In Nahigate Mode, open_panel_hsplit")
+MODAL_COMMAND(open_panel_hsplit)
+
 CUSTOM_COMMAND_SIG(g4_close_panel)
 CUSTOM_DOC("In Navigate Mode, close_panel")
 MODAL_COMMAND(close_panel)
 
+CUSTOM_COMMAND_SIG(g4_interactive_switch_buffer)
+CUSTOM_DOC("In navigate mode, interactively switch buffers.")
+MODAL_COMMAND(interactive_switch_buffer)
+
+CUSTOM_COMMAND_SIG(g4_quick_swap_buffer)
+CUSTOM_DOC("In Navigate Mode, quick swap buffer")
+MODAL_COMMAND(quick_swap_buffer)
 
 
 /*
@@ -271,6 +286,14 @@ CUSTOM_COMMAND_SIG(g4_kill_range_and_insert)
 CUSTOM_DOC("In Navigate Mode, kills the range between mark and cursor, then enters insert mode")
 MODAL_INSERT(delete_range)
 
+CUSTOM_COMMAND_SIG(g4_copy)
+CUSTOM_DOC("In Navigate Mode, copy range")
+MODAL_COMMAND(copy)
+
+CUSTOM_COMMAND_SIG(g4_cut)
+CUSTOM_DOC("In Navigate Mode, cut range")
+MODAL_COMMAND(cut)
+
 CUSTOM_COMMAND_SIG(g4_paste)
 CUSTOM_DOC("In Navigate Mode, kills the range between mark and cursor")
 N_MODAL_BLOCK({
@@ -291,6 +314,20 @@ N_MODAL_BLOCK({
                   paste_next(app);
               })
 
+CUSTOM_COMMAND_SIG(g4_undo)
+CUSTOM_DOC("In Navigate Mode, undoes the last action")
+N_MODAL_COMMAND(undo)
+
+CUSTOM_COMMAND_SIG(g4_redo)
+CUSTOM_DOC("In Navigate Mode, redoes the last action")
+N_MODAL_COMMAND(redo)
+
+
+
+/* 
+  Macro commands
+*/
+
 CUSTOM_COMMAND_SIG(g4_keyboard_macro_replay)
 CUSTOM_DOC("In Navigate Mode, replays the macro. In Do-Many mode does the macro n-many times, else inserts text")
 N_MODAL_COMMAND(keyboard_macro_replay)
@@ -303,6 +340,7 @@ MODAL_COMMAND(keyboard_macro_start_recording)
 CUSTOM_COMMAND_SIG(g4_keyboard_macro_finish_recording)
 CUSTOM_DOC("In Navigate Mode, finish recording the macro.")
 MODAL_COMMAND(keyboard_macro_finish_recording)
+
 
 
 /*
@@ -321,6 +359,8 @@ CUSTOM_COMMAND_SIG(g4_execute_previous_cli)
 CUSTOM_DOC("In Navigate Mode, execute the previous cli command")
 MODAL_COMMAND(execute_previous_cli)
 
+
+
 /*
   Lister Funtions
 */
@@ -331,6 +371,9 @@ MODAL_COMMAND(command_lister)
 CUSTOM_COMMAND_SIG(g4_project_command_lister)
 CUSTOM_DOC("In Navigate Mode, opens project command lister")
 MODAL_COMMAND(project_command_lister)
+
+
+
 
 /*
   Project Commands
@@ -354,7 +397,8 @@ CUSTOM_COMMAND_SIG(g4_search)
 CUSTOM_DOC("In Navigate Mode, search the file")
 MODAL_COMMAND(search)
 
-// TODO(caleb): implement a wrapping search
+// TODO(caleb): implement a wrapping search that creates a jump list
+// TODO(caleb): implement or find something to swap between jump lists
 CUSTOM_COMMAND_SIG(g4_reverse_search)
 CUSTOM_DOC("In Navigate Mode, search in reverse because you're too lazy to implement wrapping search.")
 MODAL_COMMAND(reverse_search)
@@ -374,6 +418,10 @@ CUSTOM_COMMAND_SIG(g4_list_all_functions_all_buffers_lister)
 CUSTOM_DOC("In Navigate Mode, Opens a lister with all functions in all open buffers")
 MODAL_COMMAND(list_all_functions_all_buffers_lister)
 
+
+/*
+Save commands
+*/
 
 // HACK(caleb): it'd be better to specify multiple commands in the bindings.4coder
 // in case I want to rebind later, but w/e

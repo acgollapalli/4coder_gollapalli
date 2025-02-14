@@ -33,6 +33,8 @@
 #include "4coder_token.h"
 #include "generated/lexer_cpp.h"
 
+
+
 #include "4coder_variables.h"
 #include "4coder_audio.h"
 #include "4coder_profile.h"
@@ -99,6 +101,7 @@
 #include "4coder_default_map.cpp"
 #include "4coder_mac_map.cpp"
 
+
 #include "4coder_default_framework_variables.cpp"
 #include "4coder_default_colors.cpp"
 #include "4coder_helper.cpp"
@@ -106,6 +109,10 @@
 #include "4coder_layout_rule.cpp"
 #include "4coder_code_index.cpp"
 #include "4coder_fancy.cpp"
+
+#include "g4_init.cpp"
+
+
 #include "4coder_draw.cpp"
 #include "4coder_font_helper.cpp"
 #include "4coder_config.cpp"

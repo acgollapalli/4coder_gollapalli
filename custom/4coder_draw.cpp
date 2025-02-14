@@ -851,7 +851,8 @@ draw_original_4coder_style_cursor_mark_highlight(Application_Links *app, View_ID
         i64 mark_pos = view_get_mark_pos(app, view_id);
         if (is_active_view){
             draw_character_block(app, text_layout_id, cursor_pos, roundness,
-                                 fcolor_id(defcolor_cursor, cursor_sub_id));
+                                 //fcolor_id(defcolor_cursor, cursor_sub_id)
+                                 g4_cursor_color());
             paint_text_color_pos(app, text_layout_id, cursor_pos,
                                  fcolor_id(defcolor_at_cursor));
             draw_character_wire_frame(app, text_layout_id, mark_pos,

@@ -56,4 +56,8 @@ buffer_lex_task = managed_id_declare(app, string_u8_litexpr("attachment"), strin
 buffer_wrap_lines = managed_id_declare(app, string_u8_litexpr("attachment"), string_u8_litexpr("buffer_wrap_lines"));
 sticky_jump_marker_handle = managed_id_declare(app, string_u8_litexpr("attachment"), string_u8_litexpr("sticky_jump_marker_handle"));
 attachment_tokens = managed_id_declare(app, string_u8_litexpr("attachment"), string_u8_litexpr("attachment_tokens"));
+defcolor_navigate_mode = managed_id_declare(app, string_u8_litexpr("colors"), string_u8_litexpr("defcolor_navigate_mode"));
+defcolor_insert_mode = managed_id_declare(app, string_u8_litexpr("colors"), string_u8_litexpr("defcolor_insert_mode"));
+defcolor_block_mode = managed_id_declare(app, string_u8_litexpr("colors"), string_u8_litexpr("defcolor_block_mode"));
+defcolor_do_many = managed_id_declare(app, string_u8_litexpr("colors"), string_u8_litexpr("defcolor_do_many"));
 }

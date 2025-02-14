@@ -1,17 +1,13 @@
 keys_global = {
   { "exit_4coder" ,                             "F4",     "Alt",                       },
-
-  // NOTE(caleb): having modal keys in global may be a real problem later on.
-  // so some of these will need to trigger insert mode.
-  { "insert_underscore", "Space", "Shift" }
+  { "write_underscore", "Space", "Shift" }
 };
 
 keys_file = {
   { "g4_return_to_nav_mode",                         "Escape",                         },
 
   { "g4_enter_insert_mode",                          "J",                              },
-  { "g4_n_keys",                                     "Comma",                          },
-
+  
   { "g4_move_up",                                    "W",                              },
   { "g4_move_left",                                  "A",                              },
   { "g4_move_down",                                  "S",                              },
@@ -38,28 +34,28 @@ keys_file = {
   { "g4_kill_range",                                 "K",                              },
   { "g4_kill_range_and_insert",                      "K",       "Shift",               },
 
+  { "g4_copy",                                       "Y",                              },
+  { "g4_cut",                                        "Y",       "Shift",               },
+
   { "g4_paste",                                      "P",                              },
   { "g4_kill_range_and_paste",                       "P",       "Shift",               },
   { "g4_paste_next",                                 "P",       "Alt",                 },
 
-
   { "g4_list_all_functions_current_buffer_lister",   "I",                              },
   { "g4_list_all_functions_all_buffers_lister",      "I",       "Shift",               },
-
 
   { "g4_keyboard_macro_replay",                 "U",                                   },
   { "g4_keyboard_macro_start_recording" ,       "U",     "Control",                    },
   { "g4_keyboard_macro_finish_recording",       "U",     "Alt",                        },
 
-  // MAYBE(caleb): panel and buffer commands should be on separate keys
-  { "g4_change_active_panel",                   "B",                                   },
-  { "g4_change_active_panel_backwards",         "B",     "Shift",                      },
-  { "quick_swap_buffer",                        "B",     "Control",                    },
-  { "interactive_switch_buffer",                "B",     "Alt",                        },
-  { "interactive_switch_buffer",                "B",     "Control", "Alt",           },
+  { "g4_change_active_panel",                   "Comma",                                   },
+  { "g4_change_active_panel_backwards",         "Comma",     "Shift",                      },
 
+  { "g4_interactive_switch_buffer",                "B",                                   },
+  { "g4_quick_swap_buffer",                        "B",     "Shift",                      },
+  
   { "g4_open_panel_vsplit",                     "Equal",                      },
-  { "open_panel_hsplit",                        "Equal",      "Shift"         },
+  { "g4_open_panel_hsplit",                        "Equal",      "Shift"         },
   { "g4_close_panel",                           "Minus",                     },
 
   { "g4_build_in_build_panel",                  "M",                                   },
@@ -80,6 +76,9 @@ keys_file = {
 
   { "g4_execute_any_cli",                       "Tick",                                },
   { "g4_execute_previous_cli",                  "Tick",       "Alt"                    },
+
+	  { "g4_undo",                                  "Z"                                    },
+  { "g4_redo",                                  "Z",          "Shift"                  },
   
   { "g4_n_keys",                                "1",                                   },
   { "g4_n_keys",                                "2",                                   },
@@ -92,7 +91,6 @@ keys_file = {
   { "g4_n_keys",                                "9",                                   },
   { "g4_n_keys",                                "0",                                   },
 
-
   { "g4_project_go_to_root_directory",          "Period",                              },
   { "g4_load_project",                          "Period",           "Shift",           },
 
@@ -100,12 +98,13 @@ keys_file = {
   { "g4_backspace_char",                        "Backspace"                            },
 
   { "g4_save_or_return",                        "Return"                               },
-  { "g4_save_all_or_shift_return",              "Return",           "Shift"            },
+  { "g4_save_all_or_shift_return",              "Return",           "Shift",           },
+
+  { "g4_search",                                "ForwardSlash",                       },
+  { "g4_list_all_locations",                    "ForwardSlash",    "Shift",           },
 
   // TODO(caleb): add tab commands
   // TODO(caleb): add visual-block commands
-  // TODO(caleb): add find-and_replace commands
-
 
   { "g4_modal_null", "C"},
   { "g4_modal_null", "E"},
@@ -117,8 +116,6 @@ keys_file = {
   { "g4_modal_null", "R"},
   { "g4_modal_null", "T"}, // TODO(caleb): bind to todo commands
   { "g4_modal_null", "V"}, // TODO(caleb): bind to version control commands or visual editing
-  { "g4_modal_null", "Y"}, // TODO(caleb): bind to copy commands
-  { "g4_modal_null", "Z"},
 
   { "g4_modal_null", "C", "Shift", },
   { "g4_modal_null", "E", "Shift", },
@@ -130,25 +127,18 @@ keys_file = {
   { "g4_modal_null", "R", "Shift", },
   { "g4_modal_null", "T", "Shift", }, // TODO(caleb): bind to todo commands
   { "g4_modal_null", "V", "Shift", }, // TODO(caleb): bind to version control commands or visual editing
-  { "g4_modal_null", "Y", "Shift", }, // TODO(caleb): bind to copy commands
   { "g4_modal_null", "Z", "Shift", },
 
-  { "g4_modal_null", "Comma",         },
   { "g4_modal_null", "Semicolon",     }, // TODO(caleb): bind to comment commands
   { "g4_modal_null", "Quote",         }, // TODO(caleb): bind to wrap in quotes
   { "g4_modal_null", "LeftBracket",   }, // TODO(caleb): bind to scope commands
   { "g4_modal_null", "RightBracket",  }, // TODO(caleb): bind to scope commands
-  { "g4_modal_null", "ForwardSlash",  }, // TODO(caleb): bind to search commands
-  { "g4_modal_null", "BackwardSlash", }, 
-
-  { "g4_modal_null", "Comma",        "Shift", },
+  
   { "g4_modal_null", "Semicolon",    "Shift", }, // TODO(caleb): bind to comment commands
   { "g4_modal_null", "Quote",        "Shift", }, // TODO(caleb): bind to wrap in quotes
   { "g4_modal_null", "LeftBracket",  "Shift", }, // TODO(caleb): bind to scope commands
   { "g4_modal_null", "RightBracket", "Shift", }, // TODO(caleb): bind to scope commands
-  { "g4_modal_null", "ForwardSlash", "Shift", }, // TODO(caleb): bind to search commands
-  { "g4_modal_null", "BackwardSlash", "Shift", }, 
-
+  
   { "g4_modal_null",                                "1",   "Shift",                                },
   { "g4_modal_null",                                "2",   "Shift",                                },
   { "g4_modal_null",                                "3",   "Shift",                                },

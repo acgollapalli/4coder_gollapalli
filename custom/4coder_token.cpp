@@ -9,7 +9,7 @@ Ii64(Token *token){
     return(Ii64_size(token->pos, token->size));
 }
 
-internal void
+void
 token_list_push(Arena *arena, Token_List *list, Token *token){
     Token_Block *block = list->last;
     if (block == 0 || block->count + 1 > block->max){

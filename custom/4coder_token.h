@@ -7,6 +7,7 @@
 #if !defined(FCODER_TOKEN_H)
 #define FCODER_TOKEN_H
 
+// TODO(caleb): maybe add a literal bool
 typedef i16 Token_Base_Kind;
 enum{
     TokenBaseKind_EOF = 0,
