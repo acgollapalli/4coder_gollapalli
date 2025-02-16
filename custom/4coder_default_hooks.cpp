@@ -732,7 +732,7 @@ do_full_lex_async(Async_Context *actx, String_Const_u8 data){
 BUFFER_HOOK_SIG(default_begin_buffer){
     ProfileScope(app, "begin buffer");
     
-    Scratch_Block scratch(app);
+    Scratch_Block scratch(app);	
     
     b32 treat_as_code = false;
     String_Const_u8 file_name = push_buffer_file_name(app, scratch, buffer_id);
@@ -747,7 +747,10 @@ BUFFER_HOOK_SIG(default_begin_buffer){
                     string_match(ext, string_u8_litexpr("h")) ||
                     string_match(ext, string_u8_litexpr("c")) ||
                     string_match(ext, string_u8_litexpr("hpp")) ||
-                    string_match(ext, string_u8_litexpr("cc"))){
+                    string_match(ext, string_u8_litexpr("cc")) ||
+                    // TODO(caleb): figure out how to get buffer local context for specific language protocols
+                    string_match(ext, string_u8_litexpr("odin"))){
+                    
                     treat_as_code = true;
                 }
                 
@@ -784,6 +787,15 @@ BUFFER_HOOK_SIG(default_begin_buffer){
                         init_language_cpp(app);
                     }
                     parse_context_id = parse_context_language_cpp;
+                }
+                
+                // TODO(caleb): something here for odin
+                // TODO(caleb): Oh... lol it's if 0'd out
+                if (string_match(ext, string_u8_litexpr("odin"))) {
+                    if (parse_context_language_odin == 0) {
+                        init_language_odin(app);
+                    }
+                    parse_context_id = parse_context_language_odin;
                 }
                 
                 // TODO(NAME): Real GLSL highlighting

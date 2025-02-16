@@ -49,6 +49,10 @@ set build_dll=%build_dll% /EXPORT:get_version /EXPORT:init_apis
 call cl %opts% %meta_opts% "%target%"
 call cl %opts% "%custom_root%\4coder_metadata_generator.cpp" /Femetadata_generator
 metadata_generator -R "%custom_root%" "%cd%\%preproc_file%"
+
+REM building language deps
+odin.exe build %custom_root%\languages\g4_odin -build-mode:lib
+
 call cl %opts% "%target%" /Fe%binname% %build_dll%
 
 REM file spammation preventation

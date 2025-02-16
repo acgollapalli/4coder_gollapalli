@@ -32,7 +32,7 @@
 
 #include "4coder_token.h"
 #include "generated/lexer_cpp.h"
-
+#include "languages/g4_odin/g4_odin.h"
 
 
 #include "4coder_variables.h"

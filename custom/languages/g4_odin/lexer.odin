@@ -5,15 +5,18 @@ SDG                                                                         JJ
 Lexer for 4coder in odin
 
 */
+package g4_odin
 
-import tk "core:odin.tokenizer"
+import "base:runtime"
+import tk "core:odin/tokenizer"
 
 C4_String_Const :: []u8
 
-C4_Base_Allocator_Reserve_Signature :: proc "c" (user_data: rawptr, size: u64, size_out: ^u64, location: C4_String_Const)
-C4_Base_Allocator_Commit_Signature :: proc "c" (user_data: rawptr, ptr: rawptr, size: u64)
+C4_Base_Allocator_Reserve_Signature :: proc "c" (user_data: rawptr, size: uint, size_out: ^uint, location: C4_String_Const)
+C4_Base_Allocator_Commit_Signature :: proc "c" (user_data: rawptr, ptr: rawptr, size: uint)
+C4_Base_Allocator_Uncommit_Signature :: proc "c" (user_data: rawptr, ptr: rawptr, size: uint)
 C4_Base_Allocator_Free_Signature :: proc "c" (user_data: rawptr, ptr: rawptr)
-C4_Base_Allocator_Set_Access_Signature :: proc "c" (user_data: rawptr, ptr: rawptr, size: u64, flags: u32)
+C4_Base_Allocator_Set_Access_Signature :: proc "c" (user_data: rawptr, ptr: rawptr, size: uint, flags: u32)
 
 C4_Base_Allocator :: struct {
 	reserve: ^C4_Base_Allocator_Reserve_Signature,
@@ -23,26 +26,26 @@ C4_Base_Allocator :: struct {
 	set_access: ^C4_Base_Allocator_Set_Access_Signature,
 }
 
-C4_Cursor :: Struct {
+C4_Cursor :: struct {
 	base: ^u8,
-	pos: u64,
-	cap: u64,
+	pos: uint,
+	cap: uint,
 }
 
-C4_Cursor_Node {
-	#raw_union {
+C4_Cursor_Node :: struct {
+	using _: struct #raw_union {
 		next: ^C4_Cursor_Node,
 		prev: ^C4_Cursor_Node,
-	}
+	},
 	cursor: C4_Cursor,
 }
 
 // TODO(caleb): Turn this into an odin allocator 
 C4_Arena :: struct {
 	base_allocator: ^C4_Base_Allocator,
-	cursor_node: ^Cursor_Node,
-	chunk_size: u64,
-	alignment: u64,
+	cursor_node: ^C4_Cursor_Node,
+	chunk_size: uint,
+	alignment: uint,
 }
 
 C4_Token_Base_Kind :: enum i16 {
@@ -86,8 +89,8 @@ C4_Token_Base_Kind :: enum i16 {
 }
 
 C4_Token :: struct {
-	pos: i64,
-	size: i64,
+	pos: int,
+	size: int,
 	kind: C4_Token_Base_Kind, 
 	flags: u16,
 	sub_kind: i16,
@@ -98,76 +101,78 @@ C4_Token_Block :: struct {
 	next: ^C4_Token_Block,
 	prev: ^C4_Token_Block,
 	tokens: [^]C4_Token,
-	count: i64,
-	max: i64,
+	count: int,
+	max: int,
 }
 
-C4_Token_List -> {
+C4_Token_List :: struct {
 	first: ^C4_Token_Block,
 	last: ^C4_Token_Block,
-	node_count: i64,
-	total_count: i64,
+	node_count: int,
+	total_count: int,
 }
 
-
-foreign c4 {
-	token_list_push :: proc "c" (arena: ^C4_Arena, list: C4_Token_List, token: C4_Token) ---
+foreign {
+	token_list_push :: proc "c" (arena: ^C4_Arena, list: ^C4_Token_List, token: ^C4_Token) ---
 }
 
-token_list_push :: proc "contextless" (arena: ^C4_Arena, list: ^C4_Token_List, token: C4_Token) {
-	block := list.last
-	if (block == nil || block.count + 1 > block.max) {
-		block = transmute(^C4_Token_List)c4.wrap_uninitialized(c4.push(arena, size_of(C4_Token_Block), nil))
-		block.next = 0
-		block.prev = 0
-		new_max := 4096
-		block.tokens = 
+@(export, link_prefix="g4_")
+lex_full_input_odin_init :: proc "c" (tokenizer: ^tk.Tokenizer, input: C4_String_Const) {
+	context = runtime.default_context();
+	tk.init(tokenizer, transmute(string)input, "4coder_input") // TODO(caleb): add error handler
 }
 
-@(export, link_prefix="g4_"){
-	lex_full_input_odin :: proc "c" (arena: ^C4_Arena, input: C4_String_Const) -> C4_Token_List {
-		// what does this do...
-		tokenizer : tk.Tokenizer
-		tk.init(&tokenizer, transmute(string)input, "4coder_input") // TODO(caleb): add error handler
-		
-		list : C4_Token_List
+@(export, link_prefix="g4_")
+lex_full_input_odin_breaks :: proc "c" (arena: ^C4_Arena, list: ^C4_Token_List, tokenizer: ^tk.Tokenizer, max: u64) -> b32 {
+	context = runtime.default_context()
+
+	// TODO(caleb): This will remove any actual EOF's from the input
+	token := tk.scan(tokenizer)
+	for ; token.kind != .EOF && u64(token.pos.offset) < max; token = tk.scan(tokenizer) {
 	
-		// TODO(caleb): This will remove any actual EOF's from the input
-		for token := tk.scan(tokenizer) token.kind != .EOF {
-	
-			c4_token := C4_Token {
-				pos = token.position,
-				size = len(token.text),
-				flags = 0,
-				// TODO(caleb): sub kind and sub flags here if I ever need them
-			}	
-	
-			// TODO(caleb): we need to handle whitespace as well
-			#partial switch token.kind {
-			case .Invalid:								c4_token.kind = .LexError
-			case .EOF: 	   							c4_token.kind = .EOF
-			case .Comment:								c4_token.kind = .Comment
-			case .File_Tag:   							c4_token.kind = .Preprocessor
-			case .Ident: 	 							c4_token.kind = .Identifier
-			case .Integer:								c4_token.kind = .LiteralInteger
-			case .Float:	  							c4_token.kind = .LiteralFloat
-			case .Imag: 	  							c4_token.kind = .LiteralInteger
-			case .Rune: 	  							c4_token.kind = .LiteralString
-			case .String: 								c4_token.kind = .LiteralString
-			case .B_Operator_Begin..<.B_Comparison_End:   c4_token.kind = .Operator
-			case .Open_Paren:							 c4_token.kind = .ParentheticalOpen
-			case .Close_Paren:							c4_token.kind = .ParentheticalClose
-			case .Open_Bracket:						   c4_token.kind = .ParentheticalOpen
-			case .Close_Bracket:						  c4_token.kind = .ParentheticalClose
-			case .Open_Brace:							 c4_token.kind = .ScopeOpen
-			case .Close_Brace:							c4_token.kind = .ScopeClose
-			case .Colon..<.B_Operator_End:				c4_token.kind = .Operator
-			case .B_Keyword_Begin..<.B_Keyword_End:	   c4_token.kind = .Keyword
-			}
-		
-			c4.token_list_push(arena, &list, &token)
+		c4_token := C4_Token {
+			pos = token.pos.offset,
+			size = len(token.text),
+			flags = 0,
+			// TODO(caleb): sub kind and sub flags here if I ever need them
+		}	
+
+		// TODO(caleb): we need to handle whitespace as well
+		#partial switch token.kind {
+		case .Invalid:								c4_token.kind = .LexError
+		case .EOF: 	   							c4_token.kind = .EOF
+		case .Comment:								c4_token.kind = .Comment
+		case .File_Tag:   							c4_token.kind = .Preprocessor
+		case .Ident: 	 							c4_token.kind = .Identifier
+		case .Integer:								c4_token.kind = .LiteralInteger
+		case .Float:	  							c4_token.kind = .LiteralFloat
+		case .Imag: 	  							c4_token.kind = .LiteralInteger
+		case .Rune: 	  							c4_token.kind = .LiteralString
+		case .String: 								c4_token.kind = .LiteralString
+		case .B_Operator_Begin..<.B_Comparison_End:   c4_token.kind = .Operator
+		case .Open_Paren:							 c4_token.kind = .ParentheticalOpen
+		case .Close_Paren:							c4_token.kind = .ParentheticalClose
+		case .Open_Bracket:						   c4_token.kind = .ParentheticalOpen
+		case .Close_Bracket:						  c4_token.kind = .ParentheticalClose
+		case .Open_Brace:							 c4_token.kind = .ScopeOpen
+		case .Close_Brace:							c4_token.kind = .ScopeClose
+		case .Colon..<.B_Operator_End:				c4_token.kind = .Operator
+		case .B_Keyword_Begin..<.B_Keyword_End:	   c4_token.kind = .Keyword
+		case:
+			assert( token.kind > .B_Custom_Keyword_Begin, "Unhandled Token Kind case in odin lexer!")
+			c4_token.kind = .Operator
 		}
-		
-		return list
+	
+		token_list_push(arena, list, &c4_token)
 	}
+	return token.kind == .EOF
+}
+
+@(export, link_prefix="g4_")
+lex_full_input_odin :: proc "c" (arena: ^C4_Arena, input: C4_String_Const) -> C4_Token_List {
+	tokenizer : tk.Tokenizer	
+	list : C4_Token_List
+	lex_full_input_odin_init(&tokenizer, input)
+	lex_full_input_odin_breaks(arena, &list, &tokenizer, max(u64))
+	return list
 }
