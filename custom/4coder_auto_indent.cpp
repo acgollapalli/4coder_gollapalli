@@ -136,6 +136,7 @@ indent__unfinished_statement(Token *token, Nest *current_nest){
             case TokenBaseKind_ScopeOpen:
             case TokenBaseKind_ScopeClose:
             case TokenBaseKind_StatementClose:
+            case TokenBaseKind_ParentheticalClose:
             {
                 result = false;
             }break;
@@ -149,7 +150,7 @@ indent__unfinished_statement(Token *token, Nest *current_nest){
 
 function void
 line_indent_cache_update(Application_Links *app, Buffer_ID buffer, i32 tab_width, Indent_Line_Cache *line_cache){
-    if (line_cache->line_number_for_cached_indent != line_cache->where_token_starts){
+    if (line_cache->line_number_for_cached_indent != line_cache->where_token_starts)
         ProfileScope(app, "get indent info");
         line_cache->line_number_for_cached_indent = line_cache->where_token_starts;
         line_cache->start_pos = get_line_start_pos(app, buffer, line_cache->where_token_starts);
@@ -272,7 +273,7 @@ get_indentation_array(Application_Links *app, Arena *arena, Buffer_ID buffer, Ra
                         if (nest != 0){
                             following_indent = nest->indent;
                         }
-                        //ignore_unfinished_statement = true;
+                        ignore_unfinished_statement = true;
                     }break;
                 }
                 
@@ -344,7 +345,7 @@ actual_indent = N; )
             if (!token_it_inc_non_whitespace(&token_it)){
                 break;
             }
-        }
+        }"
     }
     
     finished:;
